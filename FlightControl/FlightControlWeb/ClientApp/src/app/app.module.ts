@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
+import { FlightDetailsComponent } from './flight-details/flight-details.component';
 import { AgmCoreModule } from '@agm/core';
 
 @NgModule({
@@ -15,7 +16,7 @@ import { AgmCoreModule } from '@agm/core';
       apiKey: ''
     })
   ],
-  declarations: [AppComponent],
+  declarations: [AppComponent, FlightDetailsComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

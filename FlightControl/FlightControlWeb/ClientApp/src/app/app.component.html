@@ -1,2 +1,32 @@
-<agm-map (mapReady)="mapReady($event)">
-</agm-map>
+  <div class= "container-fluid">
+    <div class="row p-3">
+      <div class="col-lg-9">
+        <div class="bg-alert rounded-lg">
+          <div class="p-2">
+            <agm-map (mapReady)="mapReady($event)">
+            </agm-map>
+          </div>
+        </div>
+        
+        <div class="bg-danger rounded-lg p-2" style="height:140px;">
+          <flight-details></flight-details>
+        </div>
+      </div>
+      <div class= "col-lg-3 bg-success rounded-lg">
+        <div style="height:50%;">
+          <h5>My Flights</h5>
+          <ul>
+            <li>Flight 1</li>
+            <li>Flight 2</li>
+            <li>Flight 3</li>
+            <li>Flight 4</li>
+          </ul>
+
+        </div>
+        <div>
+          <h5>External Flights</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
