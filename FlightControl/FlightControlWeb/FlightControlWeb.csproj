@@ -25,10 +25,14 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\flight-details\flight-details.component.ts" />
+    <None Remove="ClientApp\src\app\my-flights\my-flights.component.js" />
+    <None Remove="ClientApp\src\app\my-flights\my-flights.component.js.map" />
+    <None Remove="ClientApp\src\app\my-flights\my-flights.component.ts" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\flight-details\flight-details.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\my-flights\my-flights.component.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
