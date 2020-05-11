@@ -11,7 +11,7 @@ namespace FlightControlWeb.Model
     {
         public int Passengers { get; set; }
 
-        [BindProperty(Name = "company_name")]
+        [JsonProperty("company_name")]
         public String CompanyName { get; set; }
 
         [JsonProperty(PropertyName = "initial_location")]
