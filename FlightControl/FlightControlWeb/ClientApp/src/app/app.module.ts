@@ -7,9 +7,12 @@ import { AppComponent } from './app.component';
 import { FlightDetailsComponent } from './flight-details/flight-details.component';
 import { MyFlightsComponent } from './my-flights/my-flights.component';
 import { AgmCoreModule } from '@agm/core';
-import { RouterModule } from '@angular/router';
-import { InjectionToken } from '@angular/core';
-export const BASE_URL = new InjectionToken<string>('BASE_URL');
+
+
+export function getBaseUrl() {
+  return document.getElementsByTagName('base')[0].href;
+}
+
 
 @NgModule({
   imports: [
@@ -23,7 +26,11 @@ export const BASE_URL = new InjectionToken<string>('BASE_URL');
     })
   ],
   declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent],
-  providers: [{ provide: BASE_URL, useValue: "http://localhost:21431" }],
+  providers: [
+    { provide: 'BASE_URL', useFactory: getBaseUrl }
+  ],
   bootstrap: [AppComponent]
 })
+
+
 export class AppModule { }
