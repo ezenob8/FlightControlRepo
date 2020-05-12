@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'my-flights',
@@ -6,4 +7,18 @@ import { Component } from '@angular/core';
 })
 
 export class MyFlightsComponent {
+  public flights: Flight[];
+
+  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    http.get<Flight[]>(baseUrl + 'flights').subscribe(result => {
+      this.flights = result;
+    }, error => console.error(error));
+  }
+}
+
+interface Flight {
+  passengers: number;
+  company_name: string;
+  //initial_location: Location;
+  //segments: Location[];
 }
