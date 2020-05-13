@@ -26,9 +26,8 @@ namespace FlightControlWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<FlightContext>(opt =>
-               //opt.UseSqlServer(
-               //opt.UseInMemoryDatabase("FlightsDB"));
+            services.AddDbContext<FlightContext>(opt =>
+               opt.UseSqlServer("Data Source=(local);Initial Catalog=FlightsDB;Integrated Security=SSPI"));
             services.AddControllersWithViews().AddNewtonsoftJson();
             
             // In production, the Angular files will be served from this directory

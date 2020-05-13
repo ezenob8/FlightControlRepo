@@ -14,9 +14,9 @@ namespace FlightControlWeb.Model
         [JsonProperty("company_name")]
         public String CompanyName { get; set; }
 
-        [JsonProperty(PropertyName = "initial_location")]
-        public Location InitialLocation { get; set; }
+        //[JsonProperty(PropertyName = "initial_location")]
+        //public Location InitialLocation { get; set; }
 
-        public Segment[] Segments { get; set; }
+        //public Segment[] Segments { get; set; }
     }
 }
