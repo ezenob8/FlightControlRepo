@@ -1,16 +1,23 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FlightControlWeb.Model
 {
-    public class Location
+    public partial class Location
     {
-        public double Longitude { get; set; }
+        public Location()
+        {
+            Flight = new HashSet<Flight>();
+        }
 
+        public long Id { get; set; }
+        public double Longitude { get; set; }
         public double Latitude { get; set; }
 
+        [JsonProperty("date_time")]
         public DateTime DateTime { get; set; }
+
+        public virtual ICollection<Flight> Flight { get; set; }
     }
 }

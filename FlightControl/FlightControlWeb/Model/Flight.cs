@@ -1,22 +1,19 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FlightControlWeb.Model
 {
-    public class Flight
+    public partial class Flight
     {
+        public long Id { get; set; }
         public int Passengers { get; set; }
 
         [JsonProperty("company_name")]
-        public String CompanyName { get; set; }
+        public string CompanyName { get; set; }
+        public long LocationId { get; set; }
 
-        //[JsonProperty(PropertyName = "initial_location")]
-        //public Location InitialLocation { get; set; }
-
-        //public Segment[] Segments { get; set; }
+        [JsonProperty("initial_location")]
+        public virtual Location Location { get; set; }
     }
 }

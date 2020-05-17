@@ -19,6 +19,13 @@ export class MyFlightsComponent {
 interface Flight {
   passengers: number;
   company_name: string;
-  //initial_location: Location;
+  initial_location: Location;
+  //segments: Location[];
+}
+
+interface Location {
+  longitude: number;
+  latitude: number;
+  date_time: Date;
   //segments: Location[];
 }

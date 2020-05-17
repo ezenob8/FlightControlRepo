@@ -7,12 +7,14 @@
     <tr>
       <th>Passengers</th>
       <th>CompanyName</th>
+      <th>InitialLocation</th>
     </tr>
   </thead>
   <tbody>
     <tr *ngFor="let flight of flights">
       <td>{{ flight.passengers }}</td>
       <td>{{ flight.company_name }}</td>
+      <td>{{ flight.initial_location.longitude }}</td>
     </tr>
   </tbody>
 </table>

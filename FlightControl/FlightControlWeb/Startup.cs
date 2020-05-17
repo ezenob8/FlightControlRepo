@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using FlightControlWeb.Model.DataAccess;
+using FlightControlWeb.Model;
 
 namespace FlightControlWeb
 {
@@ -26,10 +26,8 @@ namespace FlightControlWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<FlightContext>(opt =>
-               opt.UseSqlServer("Data Source=(local);Initial Catalog=FlightsDB;Integrated Security=SSPI"));
-            services.AddControllersWithViews().AddNewtonsoftJson();
-            
+            services.AddEntityFrameworkSqlServer().AddDbContext<FlightsDBContext>();
+            services.AddControllersWithViews().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
