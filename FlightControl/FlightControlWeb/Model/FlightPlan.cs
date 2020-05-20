@@ -1,0 +1,26 @@
+﻿using FlightControlWeb.Model.Common;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace FlightControlWeb.Model
+{
+    public class FlightPlan : Entity
+    {       
+        public Guid FlightGuid { get; set; }
+
+        [JsonProperty("is_external")]
+        public bool IsExternal { get; set; }
+        
+        public int Passengers { get { return Flight.Passengers; } }
+        public string CompanyName { get { return Flight.CompanyName; } }
+        public DateTime DateTime { get { return Flight.InitialLocation.DateTime; } }
+        public double Longitude { get { return Flight.InitialLocation.Longitude; } }
+        public double Latitude { get { return Flight.InitialLocation.Latitude; } }
+
+        public long FlightId { get; set; }
+
+        public Flight Flight { get; set; }
+    }
+}

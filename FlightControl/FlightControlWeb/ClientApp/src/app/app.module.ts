@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, forwardRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -6,7 +6,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { FlightDetailsComponent } from './flight-details/flight-details.component';
 import { MyFlightsComponent } from './my-flights/my-flights.component';
-import { AgmCoreModule } from '@agm/core';
+import { AgmCoreModule, AgmMarker, FitBoundsAccessor } from '@agm/core';
 
 
 export function getBaseUrl() {
@@ -27,7 +27,8 @@ export function getBaseUrl() {
   ],
   declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent],
   providers: [
-    { provide: 'BASE_URL', useFactory: getBaseUrl }
+    { provide: 'BASE_URL', useFactory: getBaseUrl },
+    { provide: FitBoundsAccessor, useExisting: forwardRef(() => AgmMarker) }
   ],
   bootstrap: [AppComponent]
 })
