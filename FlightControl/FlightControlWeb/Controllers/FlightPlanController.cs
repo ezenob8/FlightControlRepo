@@ -26,49 +26,15 @@ namespace FlightControlWeb.Controllers
 
         //public IEnumerable<Flight> Get()
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult Get(int id)
         {
             using (var db = new FlightDBContext())
             {
-                // Create Flight
-                Console.WriteLine("Inserting a new flight");
-                Flight flight = new Flight
-                {
-
-                    Passengers = 266,
-                    CompanyName = "Aerolineas",
-                    InitialLocation = new InitialLocation
-                    {
-
-                        Longitude = 33.44,
-                        Latitude = 33.45,
-                        DateTime = DateTime.Now
-
-                    },
-                    Segments = new List<Location>
-                    {
-                        new Location
-                        {
-                            Latitude=40.0,
-                            Longitude=40.1
-                        }
-                    }
-                };
-
-                db.Add(flight);
-
-                db.Add(new FlightPlan
-                {
-                    Flight = flight,
-                    FlightId = flight.Id,
-                    FlightGuid = Guid.NewGuid(),
-                    IsExternal = false
-                });
-
-                db.SaveChanges();
+                //maybe try - catch
+                FlightPlan flightPlane = db.Find<FlightPlan>(id);
             }
-            //return Ok(null);
-            return Ok(_context.Flights.Include(flight => flight.InitialLocation));
+
+            return Ok(_context.Flights.Include(flightPlane => flightPlane.FlightPlan.Flight));
         }
 
         [HttpPost]
@@ -79,33 +45,36 @@ namespace FlightControlWeb.Controllers
                 // Create Flight Plan
                 Flight flight = new Flight
                 {
-
                     Passengers = flightPlanDTO.Passengers,
                     CompanyName = flightPlanDTO.CompanyName,
                     InitialLocation = new InitialLocation
                     {
-
                         Longitude = flightPlanDTO.Longitude,
                         Latitude = flightPlanDTO.Latitude,
                         DateTime = flightPlanDTO.DateTime
                     },
+                    //DTO does not have segment to give
                     Segments = null
                 };
 
                 db.Add(flight);
 
-                db.Add(new FlightPlan
+                FlightPlan newPlan = new FlightPlan
                 {
-                    Flight = flight,
+                    //for context
                     FlightId = flight.Id,
+                    //real data
+                    Flight = flight,
                     FlightGuid = Guid.NewGuid(),
                     IsExternal = flightPlanDTO.IsExternal
-                });
+                };
 
+                db.Add(newPlan);
+
+                //upload to db
                 db.SaveChanges();
+                return Ok(newPlan);
             }
-            return Ok(null);
-            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
         }
     }
 }

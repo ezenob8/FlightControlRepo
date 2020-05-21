@@ -28,19 +28,9 @@ namespace FlightControlWeb.Controllers
         {
             using (var db = new FlightDBContext())
             {
-                // Create Server
-                Console.WriteLine("Inserting a new server");
-
-                Server server = new Server
-                {
-                    ServerId = "12345",
-                    ServerURL = "www.server.com"
-                };
-
-                db.Add(server);
-                db.SaveChanges();
+                //Go to DB and get the external servers list
             }
-            return Ok(null);
+            return Ok();
             //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
         }
 
@@ -51,9 +41,20 @@ namespace FlightControlWeb.Controllers
             {
                 db.Add(server);
                 db.SaveChanges();
+                return Ok(server);
             }
-            return Ok(null);
+            
             //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
+        }
+        [HttpDelete]
+        public ActionResult Delete(Server server)
+        {
+            using (var db = new FlightDBContext())
+            {
+                db.Remove(server);
+                db.SaveChanges();
+                return NoContent();
+            }
         }
     }
 }

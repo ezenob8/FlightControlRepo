@@ -6,6 +6,7 @@ using System.Text;
 
 namespace FlightControlWeb.DTO
 {
+    // A version of flight that are valid
     public class FlightDTO
     {
         public int Passengers { get; set; }
@@ -15,7 +16,6 @@ namespace FlightControlWeb.DTO
 
         [JsonProperty("initial_location")]
         public virtual InitialLocation InitialLocation { get; set; }
-
         public ICollection<Location> Segments { get; set; }
     }
 }

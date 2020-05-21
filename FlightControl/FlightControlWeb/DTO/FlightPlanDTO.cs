@@ -5,6 +5,7 @@ using System.Text;
 
 namespace FlightControlWeb.DTO
 {
+    // A version of flight that are valid
     public class FlightPlanDTO
     {
         [JsonProperty("flight_id")]

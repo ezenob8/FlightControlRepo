@@ -18,6 +18,7 @@ namespace FlightControlWeb.Model
 
         public ICollection<Location> Segments { get; set; }
 
+        // Data base context- not used to get data
         public FlightPlan FlightPlan { get; set; }
     }
 }
