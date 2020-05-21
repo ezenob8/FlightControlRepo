@@ -25,32 +25,23 @@ namespace FlightControlWeb.Controllers
 
         //public IEnumerable<Flight> Get()
         [HttpGet]
-        public ActionResult Get()
+        public ActionResult Get(DateTime relative_to)
         {
-        //Flight[] array = new Flight[1];
+            //Only for data from the local server data
 
-        //array[0] = new Flight
-        //{
-        //    Passengers = 216,
-        //    CompanyName = "SwissAir",
-        //    InitialLocation = new Location
-        //    {
-        //        Longitude = 33.244,
-        //        Latitude = 31.12,
-        //        DateTime = DateTime.Now
-        //    },
-        //    Segments = new Segment[1] {
-        //                                new Segment
-        //                                {
-        //                                    Longitude = 33.234 ,
-        //                                    Latitude = 31.18 ,
-        //                                    TimeSpanSeconds = 650
-        //                                }
-        //                               }
-        //};
+            
 
-        //return Ok(null);
             return Ok(_context.Flight.Include(flight => flight.Location));
         }
+        public ActionResult Get(DateTime relative_to, bool sync_all)
+        {
+            //Data from all servers
+
+
+
+            return Ok(_context.Flight.Include(flight => flight.Location));
+        }
+
+        
     }
 }
