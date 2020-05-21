@@ -21,7 +21,6 @@ namespace FlightControlWeb.Controllers
         {
             _logger = logger;
             _context = context;
-            
         }
 
         //public IEnumerable<Flight> Get()
@@ -29,11 +28,12 @@ namespace FlightControlWeb.Controllers
         public ActionResult Get(DateTime relative_to)
         {
             //Only for data from the local server data
-
+            
             
             
             return Ok(_context.Flights.Include(flight => flight.Segments));
         }
+
         public ActionResult Get(DateTime relative_to, bool sync_all)
         {
             //Data from all servers
@@ -43,41 +43,8 @@ namespace FlightControlWeb.Controllers
             using (var db = new FlightDBContext())
             {
                 // Create Flight
-                Console.WriteLine("Inserting a new flight");
-                Flight flight = new Flight
-                {
-
-                    Passengers = 266,
-                    CompanyName = "Aerolineas",
-                    InitialLocation = new InitialLocation
-                    {
-
-                        Longitude = 33.44,
-                        Latitude = 33.45,
-                        DateTime = DateTime.Now
-
-                    },
-                    Segments = new List<Location>
-                    {
-                        new Location
-                        {
-                            Latitude=40.0,
-                            Longitude=40.1
-                        }
-                    }
-                };
-
-                db.Add(flight);
-
-                db.Add(new FlightPlan
-                {
-                    Flight = flight,
-                    FlightId = flight.Id,
-                    FlightGuid = Guid.NewGuid(),
-                    IsExternal = false
-                });
-
-                db.SaveChanges();
+                Console.WriteLine("");
+            
             }
                 //return Ok(null);
                 return Ok(_context.Flights.Include(flight => flight.InitialLocation));

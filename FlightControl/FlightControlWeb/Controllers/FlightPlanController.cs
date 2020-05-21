@@ -15,7 +15,8 @@ namespace FlightControlWeb.Controllers
     {
         private readonly FlightDBContext _context;
         private readonly ILogger<FlightPlanController> _logger;
-        private Dictionary<int, FlightPlan> _idToFlightPlan;
+
+        private Dictionary<long, FlightPlan> _idToFlightPlan;
 
         FlightPlanController(ILogger<FlightPlanController> logger, FlightDBContext context)
         {
@@ -28,26 +29,26 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id}", Name = "Get")]
         public ActionResult<FlightPlan> Get(int id)
         {
+            Flight flight = _context.Find<Flight>(id);
             
-            bool isOk = _idToFlightPlan.TryGetValue(id, out FlightPlan item );//find
-           
-            if (!isOk)
-            {
-                return NotFound(id);
-            }
 
-            return Ok(item);
+            return Ok(flight.FlightPlan);
         }
 
         // POST: api/FlightPlan
         [HttpPost("{id}")]
         public ActionResult Post([FromBody] FlightPlan item)
         {
-            item.FlightGuid = new Guid();
+            item.Id = _idToFlightPlan.Count;
+            _idToFlightPlan[item.Id] = item;
             
-            //_idToFlightPlan[item.FlightGuid] = item;
+            // Sending to DB
+
+            // uncomment when flight plans are in DB
+            //_context.Flights.Add(item);
+
             
-            return CreatedAtAction(actionName: "GetFlightPlan", new { id = item.FlightGuid, item });
+            return CreatedAtAction(actionName: "GetFlightPlan", new { id = item.Id, item });
         }
 
 

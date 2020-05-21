@@ -8,7 +8,7 @@ namespace FlightControlWeb.Model
     {
         public DbSet<Flight> Flights { get; set; }
         public DbSet<Location> Segments { get; set; }
-
+        
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlServer("Data Source=(local);Initial Catalog=FlightModelDB;user=sa;password=clave123;multipleactiveresultsets=True;");
 
