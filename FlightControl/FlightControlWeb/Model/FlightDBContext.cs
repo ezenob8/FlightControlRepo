@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using FlightControlWeb.Model;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace FlightControlWeb.Model

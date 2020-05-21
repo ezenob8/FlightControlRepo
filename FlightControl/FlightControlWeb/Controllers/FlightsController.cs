@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlightControlWeb.Model;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace FlightControlWeb.Controllers
@@ -21,6 +21,7 @@ namespace FlightControlWeb.Controllers
         {
             _logger = logger;
             _context = context;
+            
         }
 
         //public IEnumerable<Flight> Get()
@@ -30,8 +31,8 @@ namespace FlightControlWeb.Controllers
             //Only for data from the local server data
 
             
-
-            return Ok(_context.Flight.Include(flight => flight.Location));
+            
+            return Ok(_context.Flights.Include(flight => flight.Segments));
         }
         public ActionResult Get(DateTime relative_to, bool sync_all)
         {

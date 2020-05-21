@@ -6,17 +6,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+/*
 namespace FlightControlWeb.Model
 {
     [Route("api/[controller]")]
     [ApiController]
     public class ServersController : ControllerBase
     {
-        private readonly FlightsDBContext _context;
+        private readonly FlightDBContext _context;
         private readonly ILogger<ServersController> _logger;
         private Dictionary<int, Servers> _idToServer;
 
-        ServersController(ILogger<ServersController> logger, FlightsDBContext context)
+        ServersController(ILogger<ServersController> logger, FlightDBContext context)
         {
             _context = context;
             _logger = logger;
@@ -49,3 +50,4 @@ namespace FlightControlWeb.Model
         }
     }
 }
+*/

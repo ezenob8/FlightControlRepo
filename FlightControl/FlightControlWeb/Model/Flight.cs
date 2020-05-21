@@ -9,7 +9,7 @@ namespace FlightControlWeb.Model
     public class Flight : Entity
     {
         public int Passengers { get; set; }
-
+        
         [JsonProperty("company_name")]
         public string CompanyName { get; set; }
 
