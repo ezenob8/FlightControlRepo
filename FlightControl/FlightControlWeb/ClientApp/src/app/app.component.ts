@@ -27,4 +27,12 @@ export class AppComponent {
   protected mapReady(map) {
     map.fitBounds(this.bounds);
   }
+
+  icon = {
+    url: 'assets/images/plane-rojo.png',
+    scaledSize: {
+      width: 40,
+      height: 40
+    }
+  };
 }
