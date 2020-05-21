@@ -5,7 +5,12 @@
         <div class="bg-alert rounded-lg">
           <div class="p-2">
             <agm-map (mapReady)="mapReady($event)">
-              <agm-marker [latitude]="-34.57895241036947" [longitude]="-59.14764404296876" [label]="'M'"></agm-marker>
+              <agm-marker [latitude]="-34.57895241036947" [longitude]="-59.14764404296876" [iconUrl]="icon"></agm-marker>
+              <!--<agm-overlay [latitude]="-34.57895241036947" [longitude]="-59.14764404296876">
+                <div>
+                  <img src="assets/images/plane-rojo.png" />
+                </div>
+              </agm-overlay>-->
             </agm-map>
           </div>
         </div>

@@ -2,52 +2,58 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using FlightControlWeb.DTO;
+using FlightControlWeb.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-/*
-namespace FlightControlWeb.Model
+namespace FlightControlWeb.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("/api/[controller]")]
     public class ServersController : ControllerBase
     {
+        private readonly ILogger<FlightsController> _logger;
         private readonly FlightDBContext _context;
-        private readonly ILogger<ServersController> _logger;
-        private Dictionary<int, Servers> _idToServer;
 
-        ServersController(ILogger<ServersController> logger, FlightDBContext context)
+        public ServersController(ILogger<FlightsController> logger, FlightDBContext context)
         {
-            _context = context;
             _logger = logger;
+            _context = context;
         }
 
-        // GET: api/Servers
         [HttpGet]
-        public ActionResult<Servers> Get()
+        public ActionResult Get()
         {
-            // Maybe check if null
-            return Ok(_idToServer.Values.ToList<Servers>());
+            using (var db = new FlightDBContext())
+            {
+                // Create Server
+                Console.WriteLine("Inserting a new server");
+
+                Server server = new Server
+                {
+                    ServerId = "12345",
+                    ServerURL = "www.server.com"
+                };
+
+                db.Add(server);
+                db.SaveChanges();
+            }
+            return Ok(null);
+            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
         }
 
-        // POST: api/Servers
         [HttpPost]
-        public ActionResult Post([FromBody] Servers server)
+        public ActionResult Post(Server server)
         {
-            //Add new Server
-            server.id = _idToServer.Count;
-            _idToServer[server.id] = server;
-            return CreatedAtAction(actionName: "GetServer", new { id = server.id }, server);
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public NoContentResult Delete(int id)
-        {
-            _idToServer.Remove(id);
-            return NoContent();
+            using (var db = new FlightDBContext())
+            {
+                db.Add(server);
+                db.SaveChanges();
+            }
+            return Ok(null);
+            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
         }
     }
 }
-*/

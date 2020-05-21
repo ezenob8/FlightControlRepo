@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace FlightControlWeb.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     public class FlightsController : ControllerBase
     {
         private readonly ILogger<FlightsController> _logger;

@@ -2,55 +2,110 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlightControlWeb.DTO;
 using FlightControlWeb.Model;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FlightControlWeb.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("/api/[controller]")]
     public class FlightPlanController : ControllerBase
     {
+        private readonly ILogger<FlightsController> _logger;
         private readonly FlightDBContext _context;
-        private readonly ILogger<FlightPlanController> _logger;
 
-        private Dictionary<long, FlightPlan> _idToFlightPlan;
-
-        FlightPlanController(ILogger<FlightPlanController> logger, FlightDBContext context)
+        public FlightPlanController(ILogger<FlightsController> logger, FlightDBContext context)
+        //public FlightsController(ILogger<FlightsController> logger)
         {
-            _context = context;
             _logger = logger;
-            
+            _context = context;
         }
 
-        // GET: api/FlightPlan/5
-        [HttpGet("{id}", Name = "Get")]
-        public ActionResult<FlightPlan> Get(int id)
+        //public IEnumerable<Flight> Get()
+        [HttpGet]
+        public ActionResult Get()
         {
-            Flight flight = _context.Find<Flight>(id);
-            
+            using (var db = new FlightDBContext())
+            {
+                // Create Flight
+                Console.WriteLine("Inserting a new flight");
+                Flight flight = new Flight
+                {
 
-            return Ok(flight.FlightPlan);
+                    Passengers = 266,
+                    CompanyName = "Aerolineas",
+                    InitialLocation = new InitialLocation
+                    {
+
+                        Longitude = 33.44,
+                        Latitude = 33.45,
+                        DateTime = DateTime.Now
+
+                    },
+                    Segments = new List<Location>
+                    {
+                        new Location
+                        {
+                            Latitude=40.0,
+                            Longitude=40.1
+                        }
+                    }
+                };
+
+                db.Add(flight);
+
+                db.Add(new FlightPlan
+                {
+                    Flight = flight,
+                    FlightId = flight.Id,
+                    FlightGuid = Guid.NewGuid(),
+                    IsExternal = false
+                });
+
+                db.SaveChanges();
+            }
+            //return Ok(null);
+            return Ok(_context.Flights.Include(flight => flight.InitialLocation));
         }
 
-        // POST: api/FlightPlan
-        [HttpPost("{id}")]
-        public ActionResult Post([FromBody] FlightPlan item)
+        [HttpPost]
+        public ActionResult Post(FlightPlanDTO flightPlanDTO)
         {
-            item.Id = _idToFlightPlan.Count;
-            _idToFlightPlan[item.Id] = item;
-            
-            // Sending to DB
+            using (var db = new FlightDBContext())
+            {
+                // Create Flight Plan
+                Flight flight = new Flight
+                {
 
-            // uncomment when flight plans are in DB
-            //_context.Flights.Add(item);
+                    Passengers = flightPlanDTO.Passengers,
+                    CompanyName = flightPlanDTO.CompanyName,
+                    InitialLocation = new InitialLocation
+                    {
 
-            
-            return CreatedAtAction(actionName: "GetFlightPlan", new { id = item.Id, item });
+                        Longitude = flightPlanDTO.Longitude,
+                        Latitude = flightPlanDTO.Latitude,
+                        DateTime = flightPlanDTO.DateTime
+                    },
+                    Segments = null
+                };
+
+                db.Add(flight);
+
+                db.Add(new FlightPlan
+                {
+                    Flight = flight,
+                    FlightId = flight.Id,
+                    FlightGuid = Guid.NewGuid(),
+                    IsExternal = flightPlanDTO.IsExternal
+                });
+
+                db.SaveChanges();
+            }
+            return Ok(null);
+            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
         }
-
-
     }
 }
