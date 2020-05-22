@@ -17,19 +17,23 @@ namespace FlightControlWeb.Controllers
         private readonly FlightDBContext _context;
 
         public FlightsController(ILogger<FlightsController> logger, FlightDBContext context)
-        //public FlightsController(ILogger<FlightsController> logger)
         {
             _logger = logger;
             _context = context;
         }
 
-        //public IEnumerable<Flight> Get()
+        
         [HttpGet]
+         //Check module
+        public ActionResult<Flight[]> Get()
+        {
+            return Ok(_context.Flights);
+        }
+
+
         public ActionResult Get(DateTime relative_to)
         {
             //Only for data from the local server data
-            
-            
             
             return Ok(_context.Flights.Include(flight => flight.Segments));
         }
