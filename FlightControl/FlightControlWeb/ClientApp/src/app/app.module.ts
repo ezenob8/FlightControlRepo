@@ -7,6 +7,9 @@ import { AppComponent } from './app.component';
 import { FlightDetailsComponent } from './flight-details/flight-details.component';
 import { MyFlightsComponent } from './my-flights/my-flights.component';
 import { AgmCoreModule, AgmMarker, FitBoundsAccessor } from '@agm/core';
+import { NgxFileDropModule } from 'ngx-file-drop';
+
+import { APP_BASE_HREF } from '@angular/common';
 
 
 export function getBaseUrl() {
@@ -23,7 +26,8 @@ export function getBaseUrl() {
       // please get your own API key here:
       // https://developers.google.com/maps/documentation/javascript/get-api-key?hl=en
       apiKey: 'AIzaSyC0cZhn4jFA7YotLo4msJAyprA6xE0tunk'
-    })
+    }),
+    NgxFileDropModule
   ],
   declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent],
   providers: [

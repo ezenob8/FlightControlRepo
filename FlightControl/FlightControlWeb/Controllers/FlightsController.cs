@@ -49,7 +49,8 @@ namespace FlightControlWeb.Controllers
             //                               }
             //};
 
-            using (var db = new FlightDBContext())
+            using (
+                var db = new FlightDBContext())
             {
                 // Create Flight
                 Console.WriteLine("Inserting a new flight");

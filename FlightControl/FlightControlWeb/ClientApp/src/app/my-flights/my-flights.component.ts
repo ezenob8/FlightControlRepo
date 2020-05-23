@@ -10,7 +10,7 @@ export class MyFlightsComponent {
   public flights: Flight[];
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Flight[]>(baseUrl + 'flights').subscribe(result => {
+    http.get<Flight[]>(baseUrl + 'api/flights').subscribe(result => {
       this.flights = result;
     }, error => console.error(error));
   }

@@ -31,7 +31,7 @@ namespace FlightControlWeb.Controllers
                 // Create Server
                 Console.WriteLine("Inserting a new server");
 
-                Server server = new Server
+                ServerDTO server = new ServerDTO
                 {
                     ServerId = "12345",
                     ServerURL = "www.server.com"
@@ -45,7 +45,7 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(Server server)
+        public ActionResult Post(ServerDTO server)
         {
             using (var db = new FlightDBContext())
             {

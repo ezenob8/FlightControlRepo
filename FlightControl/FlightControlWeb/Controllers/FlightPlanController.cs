@@ -104,8 +104,12 @@ namespace FlightControlWeb.Controllers
 
                 db.SaveChanges();
             }
-            return Ok(null);
-            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
+            return Created();
+        }
+
+        private ActionResult Created()
+        {
+            throw new NotImplementedException();
         }
     }
 }

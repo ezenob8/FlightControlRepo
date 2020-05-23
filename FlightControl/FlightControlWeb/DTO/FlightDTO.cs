@@ -16,6 +16,6 @@ namespace FlightControlWeb.DTO
         [JsonProperty("initial_location")]
         public virtual InitialLocation InitialLocation { get; set; }
 
-        public ICollection<Location> Segments { get; set; }
+        public ICollection<LocationDTO> Segments { get; set; }
     }
 }
