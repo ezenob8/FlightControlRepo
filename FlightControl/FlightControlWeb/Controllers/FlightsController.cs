@@ -25,9 +25,10 @@ namespace FlightControlWeb.Controllers
         
         [HttpGet]
          //Check module
-        public ActionResult<Flight[]> Get()
+        public ActionResult Get()
         {
-            return Ok(_context.Flights);
+            var qa = _context.Flights.Include(flight => flight.Segments);
+            return Ok(qa);
         }
 
 
@@ -37,7 +38,7 @@ namespace FlightControlWeb.Controllers
             
             return Ok(_context.Flights.Include(flight => flight.Segments));
         }
-
+        
         public ActionResult Get(DateTime relative_to, bool sync_all)
         {
             //Data from all servers
