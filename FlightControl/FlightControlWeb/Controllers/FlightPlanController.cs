@@ -104,12 +104,9 @@ namespace FlightControlWeb.Controllers
 
                 db.SaveChanges();
             }
-            return Created();
+            return Created("",null);
         }
 
-        private ActionResult Created()
-        {
-            throw new NotImplementedException();
-        }
+      
     }
 }

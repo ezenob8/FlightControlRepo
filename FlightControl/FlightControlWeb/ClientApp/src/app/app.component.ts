@@ -40,7 +40,6 @@ export class AppComponent {
   //From here drag and drop
   public files: NgxFileDropEntry[] = [];
 
-  public json: string;
 
   public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
@@ -59,28 +58,19 @@ export class AppComponent {
           let fileReader: FileReader = new FileReader();
           let strPrueba: string = '{ "flight_id": "A1", "longitude": 3.44, "latitude": 3.45, "passengers": 244, "company_name": "Aerolineas", "date_time": "2020-05-17T12:41:26.483", "is_external": false }';
 
-          let jsondata : string | ArrayBuffer;
+          let self = this;
 
           fileReader.onloadend = function (x) {
-            jsondata = fileReader.result;
+            console.log("jsondata:" + fileReader.result.toString());
+
+            self.postData(fileReader.result.toString());
           };
 
           fileReader.readAsText(file);
+ 
 
-          //// You could upload it like this:
-          const formData = new FormData();
-          formData.append('data', JSON.parse(strPrueba));
-          console.log(formData);
          
-          //// Headers
-          const headers = new HttpHeaders({
-            'security-token': 'mytoken'
-          });
-          console.log(this.baseUrl);
-          this.http.post<FlightPlan>(this.baseUrl + 'api/FlightPlan', JSON.parse(strPrueba), { headers: headers, responseType: 'json' })
-            .subscribe(data => {
-              
-            });
+        
          
           
 
@@ -102,7 +92,17 @@ export class AppComponent {
   }
 
 
+  public postData(jsondata: string) {
+    //// Headers
+    const headers = new HttpHeaders({
+      'security-token': 'mytoken'
+    });
+    console.log(this.baseUrl);
+    this.http.post<FlightPlan>(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
+      .subscribe(data => {
 
+      });
+  }
 }
 
 interface FlightPlan {
