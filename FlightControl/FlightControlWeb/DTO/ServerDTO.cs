@@ -1,11 +1,10 @@
-﻿using FlightControlWeb.Model.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FlightControlWeb.Model
+namespace FlightControlWeb.DTO
 {
-    public class Server : Entity
+    public class ServerDTO
     {
         public string ServerId { get; set; }
         public string ServerURL { get; set; }

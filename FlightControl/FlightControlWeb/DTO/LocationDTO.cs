@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using FlightControlWeb.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace FlightControlWeb.Model
+namespace FlightControlWeb.DTO
 {
-    public class Location : Coordinates
+    public class LocationDTO
     {
         public long Id { get; set; }
 

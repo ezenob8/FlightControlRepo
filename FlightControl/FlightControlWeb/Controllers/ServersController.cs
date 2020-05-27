@@ -14,10 +14,10 @@ namespace FlightControlWeb.Controllers
     [Route("/api/[controller]")]
     public class ServersController : ControllerBase
     {
-        private readonly ILogger<FlightsController> _logger;
-        private readonly FlightDBContext _context;
+        private readonly ILogger<FlightPlanController> _logger;
+        private readonly FlightPlanDBContext _context;
 
-        public ServersController(ILogger<FlightsController> logger, FlightDBContext context)
+        public ServersController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
             _logger = logger;
             _context = context;
@@ -26,35 +26,34 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            using (var db = new FlightDBContext())
+            using (var db = new FlightPlanDBContext())
             {
-                //Go to DB and get the external servers list
+                // Create Server
+                Console.WriteLine("Inserting a new server");
+
+                ServerDTO server = new ServerDTO
+                {
+                    ServerId = "12345",
+                    ServerURL = "www.server.com"
+                };
+
+                db.Add(server);
+                db.SaveChanges();
             }
-            return Ok();
-            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
+            return Ok(null);
+            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]
-        public ActionResult Post(Server server)
+        public ActionResult Post(ServerDTO server)
         {
-            using (var db = new FlightDBContext())
+            using (var db = new FlightPlanDBContext())
             {
                 db.Add(server);
                 db.SaveChanges();
-                return Ok(server);
             }
-            
-            //return Ok(_context.Flights.Include(flight => flight.InitialLocation));
-        }
-        [HttpDelete]
-        public ActionResult Delete(Server server)
-        {
-            using (var db = new FlightDBContext())
-            {
-                db.Remove(server);
-                db.SaveChanges();
-                return NoContent();
-            }
+            return Ok(null);
+            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
     }
 }
