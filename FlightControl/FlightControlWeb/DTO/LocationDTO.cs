@@ -13,8 +13,8 @@ namespace FlightControlWeb.DTO
         [JsonProperty("timespan_seconds")]
         public int TimeSpanSeconds { get; set; }
 
-        public long FlightId { get; set; }
+        public long FlightPlanId { get; set; }
 
-        public Flight Flight { get; set; }
+        public FlightPlan FlightPlan { get; set; }
     }
 }

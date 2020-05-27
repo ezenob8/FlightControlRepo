@@ -12,6 +12,6 @@ namespace FlightControlWeb.Model
         [JsonProperty("date_time")]
         public DateTime DateTime { get; set; }
 
-        public long FlightId { get; set; }
+        public long FlightPlanId { get; set; }
     }
 }

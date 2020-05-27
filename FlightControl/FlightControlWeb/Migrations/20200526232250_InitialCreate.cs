@@ -8,7 +8,7 @@ namespace FlightControlWeb.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Flights",
+                name: "FlightPlans",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
@@ -18,26 +18,26 @@ namespace FlightControlWeb.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flights", x => x.Id);
+                    table.PrimaryKey("PK_FlightPlans", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "FlightPlan",
+                name: "Flight",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FlightGuid = table.Column<Guid>(nullable: false),
+                    FlightIdentifier = table.Column<string>(nullable: true),
                     IsExternal = table.Column<bool>(nullable: false),
-                    FlightId = table.Column<long>(nullable: false)
+                    FlightPlanId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FlightPlan", x => x.Id);
+                    table.PrimaryKey("PK_Flight", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FlightPlan_Flights_FlightId",
-                        column: x => x.FlightId,
-                        principalTable: "Flights",
+                        name: "FK_Flight_FlightPlans_FlightPlanId",
+                        column: x => x.FlightPlanId,
+                        principalTable: "FlightPlans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -51,15 +51,15 @@ namespace FlightControlWeb.Migrations
                     Longitude = table.Column<double>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
                     DateTime = table.Column<DateTime>(nullable: false),
-                    FlightId = table.Column<long>(nullable: false)
+                    FlightPlanId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InitialLocation", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InitialLocation_Flights_FlightId",
-                        column: x => x.FlightId,
-                        principalTable: "Flights",
+                        name: "FK_InitialLocation_FlightPlans_FlightPlanId",
+                        column: x => x.FlightPlanId,
+                        principalTable: "FlightPlans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -73,41 +73,41 @@ namespace FlightControlWeb.Migrations
                     Longitude = table.Column<double>(nullable: false),
                     Latitude = table.Column<double>(nullable: false),
                     TimeSpanSeconds = table.Column<int>(nullable: false),
-                    FlightId = table.Column<long>(nullable: false)
+                    FlightPlanId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Segments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Segments_Flights_FlightId",
-                        column: x => x.FlightId,
-                        principalTable: "Flights",
+                        name: "FK_Segments_FlightPlans_FlightPlanId",
+                        column: x => x.FlightPlanId,
+                        principalTable: "FlightPlans",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_FlightPlan_FlightId",
-                table: "FlightPlan",
-                column: "FlightId",
+                name: "IX_Flight_FlightPlanId",
+                table: "Flight",
+                column: "FlightPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_InitialLocation_FlightId",
+                name: "IX_InitialLocation_FlightPlanId",
                 table: "InitialLocation",
-                column: "FlightId",
+                column: "FlightPlanId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Segments_FlightId",
+                name: "IX_Segments_FlightPlanId",
                 table: "Segments",
-                column: "FlightId");
+                column: "FlightPlanId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "FlightPlan");
+                name: "Flight");
 
             migrationBuilder.DropTable(
                 name: "InitialLocation");
@@ -116,7 +116,7 @@ namespace FlightControlWeb.Migrations
                 name: "Segments");
 
             migrationBuilder.DropTable(
-                name: "Flights");
+                name: "FlightPlans");
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using FlightControlWeb.Model;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,14 +7,19 @@ namespace FlightControlWeb.DTO
 {
     public class FlightDTO
     {
+        [JsonProperty("flight_id")]
+        public string FlightPlanGuid { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
         public int Passengers { get; set; }
 
         [JsonProperty("company_name")]
         public string CompanyName { get; set; }
 
-        [JsonProperty("initial_location")]
-        public virtual InitialLocation InitialLocation { get; set; }
+        [JsonProperty("date_time")]
+        public DateTime DateTime { get; set; }
 
-        public ICollection<LocationDTO> Segments { get; set; }
+        [JsonProperty("is_external")]
+        public bool IsExternal { get; set; }
     }
 }

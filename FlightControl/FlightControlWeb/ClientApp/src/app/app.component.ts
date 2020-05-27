@@ -10,10 +10,13 @@ declare var google;
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.css"]
 })
+
 export class AppComponent {
+
   bounds = null;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string) {
+
     this.mapsAPILoader.load().then(() => {
       this.bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(51.130739, -0.868052), // SW
@@ -21,7 +24,6 @@ export class AppComponent {
       );
       console.log(this.bounds);
     });
-
 
   }
 
@@ -41,8 +43,11 @@ export class AppComponent {
   public files: NgxFileDropEntry[] = [];
 
 
+
   public dropped(files: NgxFileDropEntry[]) {
+
     this.files = files;
+
     for (const droppedFile of files) {
 
       // Is it a file?
@@ -50,37 +55,33 @@ export class AppComponent {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
 
-          // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
-          
-          
-         
-          let fileReader: FileReader = new FileReader();
-          let strPrueba: string = '{ "flight_id": "A1", "longitude": 3.44, "latitude": 3.45, "passengers": 244, "company_name": "Aerolineas", "date_time": "2020-05-17T12:41:26.483", "is_external": false }';
+                  // Here you can access the real file
+                  console.log(droppedFile.relativePath, file);
 
-          let self = this;
+                  let fileReader: FileReader = new FileReader();
+                  let self = this;
 
-          fileReader.onloadend = function (x) {
-            console.log("jsondata:" + fileReader.result.toString());
+                  fileReader.onloadend = function (x) {
 
-            self.postData(fileReader.result.toString());
-          };
+                    console.log("jsondata:" + fileReader.result.toString());
+                    self.postData(fileReader.result.toString());
 
-          fileReader.readAsText(file);
- 
+                  };
 
-         
-        
-         
-          
+                  fileReader.readAsText(file);
 
         });
+
       } else {
+
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
         console.log(droppedFile.relativePath, fileEntry);
+
       }
+
     }
+
   }
 
   public fileOver(event) {
@@ -93,21 +94,27 @@ export class AppComponent {
 
 
   public postData(jsondata: string) {
+
     //// Headers
     const headers = new HttpHeaders({
       'security-token': 'mytoken'
     });
     console.log(this.baseUrl);
-    this.http.post<FlightPlan>(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
+    this.http.post<FlightDTO>(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
       .subscribe(data => {
 
       });
+
   }
+
 }
 
-interface FlightPlan {
-  date: string;
-  temperatureC: number;
-  temperatureF: number;
-  summary: string;
+interface FlightDTO {
+  flight_id: string;
+  longitude: number;
+  latitude: number;
+  passengers: number;
+  company_name: string;
+  date_time: Date;
+  is_external: boolean;
 }

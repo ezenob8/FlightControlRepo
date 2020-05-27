@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FlightControlWeb.Migrations
 {
-    [DbContext(typeof(FlightDBContext))]
-    [Migration("20200521180422_InitialCreate")]
+    [DbContext(typeof(FlightPlanDBContext))]
+    [Migration("20200526232250_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,30 @@ namespace FlightControlWeb.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("FlightIdentifier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FlightPlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsExternal")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlightPlanId")
+                        .IsUnique();
+
+                    b.ToTable("Flight");
+                });
+
+            modelBuilder.Entity("FlightControlWeb.Model.FlightPlan", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<string>("CompanyName")
                         .HasColumnName("CompanyName")
                         .HasColumnType("nvarchar(max)");
@@ -38,31 +62,7 @@ namespace FlightControlWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Flights");
-                });
-
-            modelBuilder.Entity("FlightControlWeb.Model.FlightPlan", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid>("FlightGuid")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<long>("FlightId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsExternal")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FlightId")
-                        .IsUnique();
-
-                    b.ToTable("FlightPlan");
+                    b.ToTable("FlightPlans");
                 });
 
             modelBuilder.Entity("FlightControlWeb.Model.InitialLocation", b =>
@@ -75,7 +75,7 @@ namespace FlightControlWeb.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("FlightId")
+                    b.Property<long>("FlightPlanId")
                         .HasColumnType("bigint");
 
                     b.Property<double>("Latitude")
@@ -86,7 +86,7 @@ namespace FlightControlWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlightId")
+                    b.HasIndex("FlightPlanId")
                         .IsUnique();
 
                     b.ToTable("InitialLocation");
@@ -99,7 +99,7 @@ namespace FlightControlWeb.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long>("FlightId")
+                    b.Property<long>("FlightPlanId")
                         .HasColumnType("bigint");
 
                     b.Property<double>("Latitude")
@@ -113,34 +113,34 @@ namespace FlightControlWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlightId");
+                    b.HasIndex("FlightPlanId");
 
                     b.ToTable("Segments");
                 });
 
-            modelBuilder.Entity("FlightControlWeb.Model.FlightPlan", b =>
+            modelBuilder.Entity("FlightControlWeb.Model.Flight", b =>
                 {
-                    b.HasOne("FlightControlWeb.Model.Flight", "Flight")
-                        .WithOne("FlightPlan")
-                        .HasForeignKey("FlightControlWeb.Model.FlightPlan", "FlightId")
+                    b.HasOne("FlightControlWeb.Model.FlightPlan", "FlightPlan")
+                        .WithOne("Flight")
+                        .HasForeignKey("FlightControlWeb.Model.Flight", "FlightPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("FlightControlWeb.Model.InitialLocation", b =>
                 {
-                    b.HasOne("FlightControlWeb.Model.Flight", null)
+                    b.HasOne("FlightControlWeb.Model.FlightPlan", null)
                         .WithOne("InitialLocation")
-                        .HasForeignKey("FlightControlWeb.Model.InitialLocation", "FlightId")
+                        .HasForeignKey("FlightControlWeb.Model.InitialLocation", "FlightPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("FlightControlWeb.Model.Location", b =>
                 {
-                    b.HasOne("FlightControlWeb.Model.Flight", "Flight")
+                    b.HasOne("FlightControlWeb.Model.FlightPlan", "FlightPlan")
                         .WithMany("Segments")
-                        .HasForeignKey("FlightId")
+                        .HasForeignKey("FlightPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

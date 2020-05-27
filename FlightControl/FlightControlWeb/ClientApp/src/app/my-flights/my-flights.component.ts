@@ -7,25 +7,25 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class MyFlightsComponent {
-  public flights: Flight[];
+  public flightPlans: FlightPlan[];
 
   constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Flight[]>(baseUrl + 'api/flights').subscribe(result => {
-      this.flights = result;
+    http.get<FlightPlan[]>(baseUrl + 'api/flightPlan').subscribe(result => {
+      this.flightPlans = result;
+      console.log(this.flightPlans);
     }, error => console.error(error));
   }
 }
 
-interface Flight {
+interface FlightPlan {
   passengers: number;
   company_name: string;
   initial_location: Location;
-  //segments: Location[];
+  segments: Location[];
 }
 
 interface Location {
   longitude: number;
   latitude: number;
   date_time: Date;
-  //segments: Location[];
 }

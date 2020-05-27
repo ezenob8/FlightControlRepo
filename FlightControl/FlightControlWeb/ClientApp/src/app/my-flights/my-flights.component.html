@@ -1,8 +1,8 @@
-<h5>My Flights</h5>
+<h5>My FlightPlans</h5>
 
-<p *ngIf="!flights"><em>Loading...</em></p>
+<p *ngIf="!flightPlans"><em>Loading...</em></p>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="flights">
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="flightPlans">
   <thead>
     <tr>
       <th>Passengers</th>
@@ -11,10 +11,10 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let flight of flights">
-      <td>{{ flight.passengers }}</td>
-      <td>{{ flight.company_name }}</td>
-      <td>{{ flight.initial_location.longitude }}</td>
+    <tr *ngFor="let flightPlan of flightPlans">
+      <td>{{ flightPlan.passengers }}</td>
+      <td>{{ flightPlan.company_name }}</td>
+      <td>{{ flightPlan.initial_location.longitude }}</td>
     </tr>
   </tbody>
 </table>

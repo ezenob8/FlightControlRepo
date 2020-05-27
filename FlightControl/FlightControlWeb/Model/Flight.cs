@@ -7,16 +7,19 @@ using System.Text;
 namespace FlightControlWeb.Model
 {
     public class Flight : Entity
-    {
-        public int Passengers { get; set; }
+    {       
+        public string FlightIdentifier { get; set; }
 
-        [JsonProperty("company_name")]
-        public string CompanyName { get; set; }
+        [JsonProperty("is_external")]
+        public bool IsExternal { get; set; }
+        
+        public int Passengers { get { return FlightPlan.Passengers; } }
+        public string CompanyName { get { return FlightPlan.CompanyName; } }
+        public DateTime DateTime { get { return FlightPlan.InitialLocation.DateTime; } }
+        public double Longitude { get { return FlightPlan.InitialLocation.Longitude; } }
+        public double Latitude { get { return FlightPlan.InitialLocation.Latitude; } }
 
-        [JsonProperty("initial_location")]
-        public virtual InitialLocation InitialLocation { get; set; }
-
-        public ICollection<Location> Segments { get; set; }
+        public long FlightPlanId { get; set; }
 
         public FlightPlan FlightPlan { get; set; }
     }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using FlightControlWeb.DTO;
 using FlightControlWeb.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,25 +16,47 @@ namespace FlightControlWeb.Controllers
     [Route("/api/[controller]")]
     public class FlightPlanController : ControllerBase
     {
-        private readonly ILogger<FlightsController> _logger;
-        private readonly FlightDBContext _context;
+        private readonly ILogger<FlightPlanController> _logger;
+        private readonly FlightPlanDBContext _context;
 
-        public FlightPlanController(ILogger<FlightsController> logger, FlightDBContext context)
-        //public FlightsController(ILogger<FlightsController> logger)
+        public FlightPlanController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
+        //public FlightPlansController(ILogger<FlightPlansController> logger)
         {
             _logger = logger;
             _context = context;
         }
 
-        //public IEnumerable<Flight> Get()
         [HttpGet]
         public ActionResult Get()
         {
-            using (var db = new FlightDBContext())
+            //FlightPlan[] array = new FlightPlan[1];
+
+            //array[0] = new FlightPlan
+            //{
+            //    Passengers = 216,
+            //    CompanyName = "SwissAir",
+            //    InitialLocation = new Location
+            //    {
+            //        Longitude = 33.244,
+            //        Latitude = 31.12,
+            //        DateTime = DateTime.Now
+            //    },
+            //    Segments = new Segment[1] {
+            //                                new Segment
+            //                                {
+            //                                    Longitude = 33.234 ,
+            //                                    Latitude = 31.18 ,
+            //                                    TimeSpanSeconds = 650
+            //                                }
+            //                               }
+            //};
+
+            using (
+                var db = new FlightPlanDBContext())
             {
-                // Create Flight
+                // Create FlightPlan
                 Console.WriteLine("Inserting a new flight");
-                Flight flight = new Flight
+                FlightPlan flightPlan = new FlightPlan
                 {
 
                     Passengers = 266,
@@ -55,29 +79,31 @@ namespace FlightControlWeb.Controllers
                     }
                 };
 
-                db.Add(flight);
+                db.Add(flightPlan);
 
-                db.Add(new FlightPlan
+                db.Add(new Flight
                 {
-                    Flight = flight,
-                    FlightId = flight.Id,
-                    FlightGuid = Guid.NewGuid(),
+                    FlightPlan = flightPlan,
+                    FlightPlanId = flightPlan.Id,
+                    FlightIdentifier = "",
                     IsExternal = false
                 });
 
                 db.SaveChanges();
             }
-            //return Ok(null);
-            return Ok(_context.Flights.Include(flight => flight.InitialLocation));
+            return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]
-        public ActionResult Post(FlightPlanDTO flightPlanDTO)
+        [Consumes(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public CreatedResult Post(FlightPlanDTO flightPlanDTO)
         {
-            using (var db = new FlightDBContext())
+            using (var db = new FlightPlanDBContext())
             {
-                // Create Flight Plan
-                Flight flight = new Flight
+                // Create FlightPlan Plan
+                FlightPlan flightPlan = new FlightPlan
                 {
 
                     Passengers = flightPlanDTO.Passengers,
@@ -85,28 +111,32 @@ namespace FlightControlWeb.Controllers
                     InitialLocation = new InitialLocation
                     {
 
-                        Longitude = flightPlanDTO.Longitude,
-                        Latitude = flightPlanDTO.Latitude,
-                        DateTime = flightPlanDTO.DateTime
+                        Longitude = flightPlanDTO.InitialLocation.Longitude,
+                        Latitude = flightPlanDTO.InitialLocation.Latitude,
+                        DateTime = flightPlanDTO.InitialLocation.DateTime
                     },
                     Segments = null
                 };
 
-                db.Add(flight);
+                db.Add(flightPlan);
 
-                db.Add(new FlightPlan
+                Flight flight = new Flight
                 {
-                    Flight = flight,
-                    FlightId = flight.Id,
-                    FlightGuid = Guid.NewGuid(),
-                    IsExternal = flightPlanDTO.IsExternal
-                });
+                    FlightPlan = flightPlan,
+                    FlightPlanId = flightPlan.Id,
+                    FlightIdentifier = "",
+                    IsExternal = false
+                };
+
+                db.Add(flight);
 
                 db.SaveChanges();
             }
-            return Created("",null);
+
+
+            return Created("", null);
         }
 
-      
     }
+
 }

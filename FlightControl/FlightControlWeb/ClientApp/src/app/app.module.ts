@@ -9,8 +9,6 @@ import { MyFlightsComponent } from './my-flights/my-flights.component';
 import { AgmCoreModule, AgmMarker, FitBoundsAccessor } from '@agm/core';
 import { NgxFileDropModule } from 'ngx-file-drop';
 
-import { APP_BASE_HREF } from '@angular/common';
-
 
 export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
