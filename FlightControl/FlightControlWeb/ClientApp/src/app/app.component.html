@@ -1,4 +1,4 @@
-<base href="/" />
+
 <div class= "container-fluid">
     <div class="row p-3">
       <div class="col-lg-9">
@@ -6,11 +6,6 @@
           <div class="p-2">
             <agm-map (mapReady)="mapReady($event)">
               <agm-marker [latitude]="-34.57895241036947" [longitude]="-59.14764404296876" [iconUrl]="icon"></agm-marker>
-              <!--<agm-overlay [latitude]="-34.57895241036947" [longitude]="-59.14764404296876">
-                <div>
-                  <img src="assets/images/plane-rojo.png" />
-                </div>
-              </agm-overlay>-->
             </agm-map>
           </div>
         </div>
@@ -24,9 +19,33 @@
           <my-flights></my-flights>
         </div>
         <div>
-          <h5>External Flights</h5>
+          <h5>External FlightPlans</h5>
         </div>
       </div>
     </div>
   </div>
+
+<div class="center">
+  <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
+                 (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+    <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+      Optional custom content that replaces the the entire default content.
+      <button type="button" (click)="openFileSelector()">Browse Files</button>
+    </ng-template>
+  </ngx-file-drop>
+  <div class="upload-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody class="upload-name-style">
+        <tr *ngFor="let item of files; let i=index">
+          <td><strong>{{ item.relativePath }}</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
