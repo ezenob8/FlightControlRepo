@@ -24,7 +24,6 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
-        //public IEnumerable<FlightPlan> Get()
         [HttpGet]
         public ActionResult Get()
         {

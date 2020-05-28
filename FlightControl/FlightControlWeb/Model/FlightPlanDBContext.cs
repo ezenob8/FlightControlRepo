@@ -8,7 +8,8 @@ namespace FlightControlWeb.Model
     {
         public DbSet<FlightPlan> FlightPlans { get; set; }
         public DbSet<Location> Segments { get; set; }
-        
+        public DbSet<Server> Servers { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlServer("Data Source=(local);Initial Catalog=FlightPlanModelDB;user=sa;password=clave123;multipleactiveresultsets=True;");
 
@@ -38,6 +39,14 @@ namespace FlightControlWeb.Model
             .HasOne<Flight>(s => s.Flight)
             .WithOne(ad => ad.FlightPlan)
             .HasForeignKey<Flight>(ad => ad.FlightPlanId);
+            #endregion
+
+            #region Mapping Servers
+            modelBuilder.Entity<Server>(ob =>
+            {
+                ob.ToTable("Servers");
+                ob.Property(o => o.ServerURL).HasColumnName("ServerURL");
+            });
             #endregion
 
         }

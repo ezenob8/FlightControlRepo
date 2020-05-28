@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+
 namespace FlightControlWeb.Controllers
 {
     [ApiController]
@@ -16,6 +17,7 @@ namespace FlightControlWeb.Controllers
     {
         private readonly ILogger<FlightPlanController> _logger;
         private readonly FlightPlanDBContext _context;
+
 
         public ServersController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
@@ -31,17 +33,27 @@ namespace FlightControlWeb.Controllers
                 // Create Server
                 Console.WriteLine("Inserting a new server");
 
-                ServerDTO server = new ServerDTO
+                Server server = new Server
                 {
                     ServerId = "12345",
                     ServerURL = "www.server.com"
                 };
 
                 db.Add(server);
-                db.SaveChanges();
+                try { db.SaveChanges(); }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    // 424 is Failed Dependency
+                    return StatusCode(424);
+                }
+                ServerDTO ss = new ServerDTO
+                {
+                    ServerId = "1111",
+                    ServerURL = "eeee"
+                };
+                return Ok(ss);
             }
-            return Ok(null);
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]
@@ -50,10 +62,15 @@ namespace FlightControlWeb.Controllers
             using (var db = new FlightPlanDBContext())
             {
                 db.Add(server);
-                db.SaveChanges();
+                try { db.SaveChanges(); }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    // 424 is Failed Dependency
+                    return StatusCode(424);
+                }
             }
-            return Ok(null);
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
+            return Ok(server);
         }
     }
 }

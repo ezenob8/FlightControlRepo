@@ -13,10 +13,10 @@ namespace FlightsTests
         public void CheackIfValid()
         {
             // Arrange
-            FlightDBContext dBContext = new FlightDBContext();
-            ILogger<FlightsController> log = new Logger<FlightsController>(new LoggerFactory());
-            FlightsController flightsController = new FlightsController(log, dBContext);
-            var rawData = dBContext.Flights.FromSqlRaw("Select");
+            FlightPlanDBContext dBContext = new FlightPlanDBContext();
+            ILogger<FlightPlanController> log = new Logger<FlightPlanController>(new LoggerFactory());
+            FlightController flightsController = new FlightController(log, dBContext);
+            var rawData = dBContext.FlightPlans.FromSqlRaw("Select");
 
             // Act
             var data = flightsController.Get();

@@ -27,71 +27,32 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get()
+        [Route("/api/[controller]/{id}")]
+        public ActionResult Get(int id)
         {
-            //FlightPlan[] array = new FlightPlan[1];
-
-            //array[0] = new FlightPlan
-            //{
-            //    Passengers = 216,
-            //    CompanyName = "SwissAir",
-            //    InitialLocation = new Location
-            //    {
-            //        Longitude = 33.244,
-            //        Latitude = 31.12,
-            //        DateTime = DateTime.Now
-            //    },
-            //    Segments = new Segment[1] {
-            //                                new Segment
-            //                                {
-            //                                    Longitude = 33.234 ,
-            //                                    Latitude = 31.18 ,
-            //                                    TimeSpanSeconds = 650
-            //                                }
-            //                               }
-            //};
-
             using (
                 var db = new FlightPlanDBContext())
             {
-                // Create FlightPlan
-                Console.WriteLine("Inserting a new flight");
-                FlightPlan flightPlan = new FlightPlan
+                try
                 {
+                    long longId = (long)id;
+                    FlightPlan found = db.Find<FlightPlan>(longId);
+                    Flight found_flight = db.Find<Flight>(found.Id);
+                    found.Flight = found_flight;
+                    found.InitialLocation = db.Find<InitialLocation>(longId);
 
-                    Passengers = 266,
-                    CompanyName = "Aerolineas",
-                    InitialLocation = new InitialLocation
-                    {
+                    // are Segments kept as lists?
+                    // var segments = db.Find<Location>(longId);
+                    // found.Segments ? segments
 
-                        Longitude = 33.44,
-                        Latitude = 33.45,
-                        DateTime = DateTime.Now
-
-                    },
-                    Segments = new List<Location>
-                    {
-                        new Location
-                        {
-                            Latitude=40.0,
-                            Longitude=40.1
-                        }
-                    }
-                };
-
-                db.Add(flightPlan);
-
-                db.Add(new Flight
+                    return Ok(found);
+                }
+                catch (Exception ex)
                 {
-                    FlightPlan = flightPlan,
-                    FlightPlanId = flightPlan.Id,
-                    FlightIdentifier = "",
-                    IsExternal = false
-                });
-
-                db.SaveChanges();
+                    _logger.LogError(ex.InnerException.Message);
+                    return NoContent();
+                }
             }
-            return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]
