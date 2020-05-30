@@ -5,7 +5,9 @@
         <div class="bg-alert rounded-lg">
           <div class="p-2">
             <agm-map (mapReady)="mapReady($event)">
-              <agm-marker [latitude]="-34.57895241036947" [longitude]="-59.14764404296876" [iconUrl]="icon"></agm-marker>
+              <!--<agm-marker [latitude]="-34.57895241036947" [longitude]="-59.14764404296876" [iconUrl]="icon"></agm-marker>-->
+              <agm-marker *ngFor="let flight of extendedFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon">
+                </agm-marker>
             </agm-map>
           </div>
         </div>
@@ -19,7 +21,7 @@
           <my-flights></my-flights>
         </div>
         <div>
-          <h5>External FlightPlans</h5>
+          <h5>External Flights</h5>
         </div>
       </div>
     </div>

@@ -28,15 +28,25 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get()
         {
+            
+            //return Ok(null);
+            return Ok(from server in _context.Servers
+                      select new ServerDTO
+                      {
+                          ServerId = server.ServerId,
+                          ServerURL = server.ServerURL
+                      });
+        }
+
+        [HttpPost]
+        public ActionResult Post(ServerDTO serverDTO)
+        {
             using (var db = new FlightPlanDBContext())
             {
-                // Create Server
-                Console.WriteLine("Inserting a new server");
-
                 Server server = new Server
                 {
-                    ServerId = "12345",
-                    ServerURL = "www.server.com"
+                    ServerId = serverDTO.ServerId,
+                    ServerURL = serverDTO.ServerURL
                 };
 
                 db.Add(server);
@@ -56,42 +66,14 @@ namespace FlightControlWeb.Controllers
             }
         }
 
-        [HttpPost]
-        public ActionResult Post(ServerDTO server)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
         {
-            using (var db = new FlightPlanDBContext())
-            {
-                db.Add(server);
-                try { db.SaveChanges(); }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Message);
-                    // 424 is Failed Dependency
-                    return StatusCode(424);
-                }
-            }
-            return Ok(server);
-        }
-
-        [HttpDelete]
-        public ActionResult Delete(int id)
-        {
-            using (var db = new FlightPlanDBContext())
-            {
-                var toDelete = db.Find<Server>(id);
-                if (toDelete == null)
-                    return NotFound(id);
-                db.Remove<Server>(toDelete);
-
-                try { db.SaveChanges(); }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Message);
-                    // 424 is Failed Dependency
-                    return StatusCode(424);
-                }
-                return Ok(id);
-            }
+            Server server = _context.Servers.Where(item => item.ServerId == id).First();
+            _context.Servers.Remove(server);
+            _context.SaveChanges();
+            return Ok(null);
+            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
     }
 }

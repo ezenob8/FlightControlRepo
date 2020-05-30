@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using FlightControlWeb.Algorithms;
 using FlightControlWeb.DTO;
 using FlightControlWeb.Model;
 using Microsoft.AspNetCore.Http;
@@ -26,33 +27,48 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Route("/api/[controller]/{id}")]
-        public ActionResult Get(int id)
+        [HttpGet("{id?}")]
+        public ActionResult Get(string? id)
         {
-            using (
-                var db = new FlightPlanDBContext())
-            {
-                try
-                {
-                    long longId = (long)id;
-                    FlightPlan found = db.Find<FlightPlan>(longId);
-                    Flight found_flight = db.Find<Flight>(found.Id);
-                    found.Flight = found_flight;
-                    found.InitialLocation = db.Find<InitialLocation>(longId);
+            //using (
+            //    var db = new FlightPlanDBContext())
+            //{
+            //    // Create FlightPlan
+            //    Console.WriteLine("Inserting a new flight");
+            //    FlightPlan flightPlan1 = new FlightPlan
+            //    {
+
+            //        Passengers = 266,
+            //        CompanyName = "Aerolineas",
+            //        InitialLocation = new InitialLocation
+            //        {
 
                     // are Segments kept as lists?
                     // var segments = db.Find<Location>(longId);
                     // found.Segments ? segments
 
-                    return Ok(found);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.InnerException.Message);
-                    return NoContent();
-                }
-            }
+            var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
+            var output = from flightPlan in flightPlans
+                         select new FlightPlanDTO
+                         {
+                             Passengers = flightPlan.Passengers,
+                             CompanyName = flightPlan.CompanyName,
+                             InitialLocation = new InitialLocationDTO
+                             {
+                                 Longitude = flightPlan.InitialLocation.Longitude,
+                                 Latitude = flightPlan.InitialLocation.Latitude,
+                                 DateTime = flightPlan.InitialLocation.DateTime.ToString() + "Z",
+                             },
+                             Segments = (from location in flightPlan.Segments select new LocationDTO
+                             {
+                                 Longitude = location.Longitude,
+                                 Latitude = location.Latitude,
+                                 TimeSpanSeconds = location.TimeSpanSeconds
+                             }).ToArray()
+                         };
+            return Ok(output);
+
+            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]
@@ -74,18 +90,22 @@ namespace FlightControlWeb.Controllers
 
                         Longitude = flightPlanDTO.InitialLocation.Longitude,
                         Latitude = flightPlanDTO.InitialLocation.Latitude,
-                        DateTime = flightPlanDTO.InitialLocation.DateTime
+                        DateTime = Convert.ToDateTime(flightPlanDTO.InitialLocation.DateTime.Replace('T', ' ').Replace('Z', ' '))                
                     },
-                    Segments = null
+                    Segments = (from segment in flightPlanDTO.Segments
+                               select new Location { Longitude = segment.Longitude,
+                                                     Latitude = segment.Latitude,
+                                                     TimeSpanSeconds = segment.TimeSpanSeconds
+                                                   }).ToList()
                 };
 
                 db.Add(flightPlan);
-
+                string lastId = !db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).Any() ? "AAAA-0000" : db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).First().Flight.FlightIdentifier;
                 Flight flight = new Flight
                 {
                     FlightPlan = flightPlan,
                     FlightPlanId = flightPlan.Id,
-                    FlightIdentifier = "",
+                    FlightIdentifier = GenerateFlightId.GenerateFlightIdentifier(lastId),
                     IsExternal = false
                 };
 
