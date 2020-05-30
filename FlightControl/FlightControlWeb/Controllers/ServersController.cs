@@ -72,5 +72,26 @@ namespace FlightControlWeb.Controllers
             }
             return Ok(server);
         }
+
+        [HttpDelete]
+        public ActionResult Delete(int id)
+        {
+            using (var db = new FlightPlanDBContext())
+            {
+                var toDelete = db.Find<Server>(id);
+                if (toDelete == null)
+                    return NotFound(id);
+                db.Remove<Server>(toDelete);
+
+                try { db.SaveChanges(); }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    // 424 is Failed Dependency
+                    return StatusCode(424);
+                }
+                return Ok(id);
+            }
+        }
     }
 }
