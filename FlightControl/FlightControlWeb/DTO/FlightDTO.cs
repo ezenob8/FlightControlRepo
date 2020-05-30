@@ -8,7 +8,7 @@ namespace FlightControlWeb.DTO
     public class FlightDTO
     {
         [JsonProperty("flight_id")]
-        public string FlightPlanGuid { get; set; }
+        public string FlightIdentifier { get; set; }
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int Passengers { get; set; }
@@ -21,5 +21,7 @@ namespace FlightControlWeb.DTO
 
         [JsonProperty("is_external")]
         public bool IsExternal { get; set; }
+
+        public string ServerId { get; set; }
     }
 }

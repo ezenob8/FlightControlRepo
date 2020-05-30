@@ -26,15 +26,25 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get()
         {
+            
+            //return Ok(null);
+            return Ok(from server in _context.Servers
+                      select new ServerDTO
+                      {
+                          ServerId = server.ServerId,
+                          ServerURL = server.ServerURL
+                      });
+        }
+
+        [HttpPost]
+        public ActionResult Post(ServerDTO serverDTO)
+        {
             using (var db = new FlightPlanDBContext())
             {
-                // Create Server
-                Console.WriteLine("Inserting a new server");
-
-                ServerDTO server = new ServerDTO
+                Server server = new Server
                 {
-                    ServerId = "12345",
-                    ServerURL = "www.server.com"
+                    ServerId = serverDTO.ServerId,
+                    ServerURL = serverDTO.ServerURL
                 };
 
                 db.Add(server);
@@ -44,16 +54,15 @@ namespace FlightControlWeb.Controllers
             //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
-        [HttpPost]
-        public ActionResult Post(ServerDTO server)
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
         {
-            using (var db = new FlightPlanDBContext())
-            {
-                db.Add(server);
-                db.SaveChanges();
-            }
+            Server server = _context.Servers.Where(item => item.ServerId == id).First();
+            _context.Servers.Remove(server);
+            _context.SaveChanges();
             return Ok(null);
             //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
+
     }
 }

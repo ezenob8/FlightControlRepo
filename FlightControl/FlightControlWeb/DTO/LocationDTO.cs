@@ -8,13 +8,10 @@ namespace FlightControlWeb.DTO
 {
     public class LocationDTO
     {
-        public long Id { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
 
         [JsonProperty("timespan_seconds")]
         public int TimeSpanSeconds { get; set; }
-
-        public long FlightPlanId { get; set; }
-
-        public FlightPlan FlightPlan { get; set; }
     }
 }

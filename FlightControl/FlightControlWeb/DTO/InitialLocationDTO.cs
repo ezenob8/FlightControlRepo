@@ -12,6 +12,6 @@ namespace FlightControlWeb.DTO
         public double Latitude { get; set; }
 
         [JsonProperty("date_time")]
-        public DateTime DateTime { get; set; }
+        public string DateTime { get; set; }
     }
 }

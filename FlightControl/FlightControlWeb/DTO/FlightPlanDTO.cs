@@ -15,7 +15,7 @@ namespace FlightControlWeb.DTO
         public string CompanyName { get; set; }
 
         [JsonProperty("initial_location")]
-        public virtual InitialLocation InitialLocation { get; set; }
+        public virtual InitialLocationDTO InitialLocation { get; set; }
 
         public LocationDTO[] Segments { get; set; }
     }

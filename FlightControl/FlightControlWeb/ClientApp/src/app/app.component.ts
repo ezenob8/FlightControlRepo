@@ -14,6 +14,9 @@ declare var google;
 export class AppComponent {
 
   bounds = null;
+  public flights: FlightDTO[];
+  public extendedFlights: ExtendedFlightDTO[]=[];
+  public servers: ServerDTO[];
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string) {
 
@@ -25,7 +28,75 @@ export class AppComponent {
       console.log(this.bounds);
     });
 
-  }
+    //this.flights = [
+    //  {
+    //  flight_id: "ABCD-0123",
+    //  longitude: 33.244,
+    //  latitude: 31.12,
+    //  passengers: 216,
+    //  company_name: "SwissAirFinal",
+    //  date_time: "2020-12-26T23:56:21",
+    //  is_external: true
+
+    //  },
+    //  {
+    //    flight_id: "ABCD-0123",
+    //    longitude: -59.14764404296876,
+    //    latitude: -34.57895241036947,
+    //    passengers: 216,
+    //    company_name: "SwissAirFinal",
+    //    date_time: "2020-12-26T23:56:21",
+    //    is_external: true
+
+    //  }
+    //];
+
+    http.get<ServerDTO[]>(baseUrl + 'api/servers').subscribe(result => {
+      this.servers = result;
+      console.log(this.servers);
+      console.log('x' + this.servers[0].serverURL);
+
+    
+
+      http.get<FlightDTO[]>(this.servers[0].serverURL).subscribe(result => {
+        console.log(result);
+        this.flights = result;
+        console.log('serverid:' + this.servers[0].serverId);
+        this.flights.forEach(item => {
+
+          let extendedFlght: ExtendedFlightDTO = {
+            flight_id: item.flight_id,
+            longitude: item.longitude,
+            latitude: item.latitude,
+            passengers: item.passengers,
+            company_name: item.company_name,
+            date_time: item.date_time,
+            is_external: item.is_external,
+            serverId: this.servers[0].serverId
+            
+          };
+         
+          this.extendedFlights.push(extendedFlght);
+          
+        });
+        //this.flights.map((obj) => {
+        //  //obj.serverId = this.servers[0].serverId;
+        //  // or via brackets
+        //  obj['serverId'] = this.servers[0].serverId;
+        //  return obj;
+        //})
+        //for (var i = 0; i < this.flights.length; i++) {
+        //  this.flights[i].serverId = this.servers[0].serverId; // Add "total": 2 to all objects in array
+        //}
+        //this.flights.push({ 'serverId': this.servers[0].serverId  });  
+
+        console.log(this.extendedFlights);
+
+      }, error => console.error(error));
+
+    }, error => console.error(error));
+
+    }
 
   protected mapReady(map) {
     map.fitBounds(this.bounds);
@@ -117,4 +188,15 @@ interface FlightDTO {
   company_name: string;
   date_time: Date;
   is_external: boolean;
+  //serverId: string;
 }
+
+interface ExtendedFlightDTO extends FlightDTO {
+  serverId: string
+}
+
+interface ServerDTO {
+  serverId: string;
+  serverURL: string;
+}
+

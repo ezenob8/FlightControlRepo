@@ -8,7 +8,11 @@ namespace FlightControlWeb.Model
     {
         public DbSet<FlightPlan> FlightPlans { get; set; }
         public DbSet<Location> Segments { get; set; }
-        
+
+        public DbSet<Flight> Flight { get; set; }
+
+        public DbSet<Server> Servers { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlServer("Data Source=(local);Initial Catalog=FlightPlanModelDB;user=sa;password=clave123;multipleactiveresultsets=True;");
 
@@ -31,7 +35,6 @@ namespace FlightControlWeb.Model
             .WithMany(g => g.Segments)
             .HasForeignKey(s => s.FlightPlanId);
             #endregion
-
 
             #region Mapping Flight
             modelBuilder.Entity<FlightPlan>()
