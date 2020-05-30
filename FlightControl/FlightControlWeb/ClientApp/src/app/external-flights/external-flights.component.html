@@ -1,0 +1,19 @@
+<h5>External Flights</h5>
+
+<p *ngIf="!extendedFlights"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="extendedFlights">
+  <thead>
+    <tr>
+      <th>Passengers</th>
+      <th>CompanyName</th>
+      <th>InitialLocation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let flight of extendedFlights" (click)="flightPlanLoadDetailClick('',flight.flight_id)">
+      <td>{{ flight.flight_id }}</td>
+      <td>{{ flight.company_name }}</td>
+    </tr>
+  </tbody>
+</table>

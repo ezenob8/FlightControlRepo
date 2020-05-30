@@ -1,7 +1,20 @@
 <h5>FlightPlan Details</h5>
-<ul>
-  <li>FlightPlan 1</li>
-  <li>FlightPlan 2</li>
-  <li>FlightPlan 3</li>
-  <li>FlightPlan 4</li>
-</ul>
+<p *ngIf="!selectedFlightPlan"><em>No Flight Plan for details</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="selectedFlightPlan">
+  <thead>
+    <tr>
+      <th>Passengers</th>
+      <th>CompanyName</th>
+      <th>InitialLocation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr >
+      <td>{{ selectedFlightPlan.passengers }}</td>
+      <td>{{ selectedFlightPlan.company_name }}</td>
+      <td>{{ selectedFlightPlan.initial_location.longitude }}</td>
+    </tr>
+  </tbody>
+</table>
+

@@ -2,12 +2,16 @@ import { NgModule, forwardRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AgmCoreModule, AgmMarker, FitBoundsAccessor } from '@agm/core';
+import { NgxFileDropModule } from 'ngx-file-drop';
+
+import { EventEmitterService } from './event-emitter.service';
 
 import { AppComponent } from './app.component';
 import { FlightDetailsComponent } from './flight-details/flight-details.component';
 import { MyFlightsComponent } from './my-flights/my-flights.component';
-import { AgmCoreModule, AgmMarker, FitBoundsAccessor } from '@agm/core';
-import { NgxFileDropModule } from 'ngx-file-drop';
+import { ExternalFlightsComponent } from './external-flights/external-flights.component';
+
 
 
 export function getBaseUrl() {
@@ -27,10 +31,11 @@ export function getBaseUrl() {
     }),
     NgxFileDropModule
   ],
-  declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent],
+  declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent, ExternalFlightsComponent],
   providers: [
     { provide: 'BASE_URL', useFactory: getBaseUrl },
-    { provide: FitBoundsAccessor, useExisting: forwardRef(() => AgmMarker) }
+    { provide: FitBoundsAccessor, useExisting: forwardRef(() => AgmMarker) },
+    EventEmitterService
   ],
   bootstrap: [AppComponent]
 })
