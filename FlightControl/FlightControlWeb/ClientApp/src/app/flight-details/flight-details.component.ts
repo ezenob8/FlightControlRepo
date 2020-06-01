@@ -26,12 +26,20 @@ export class FlightDetailsComponent implements OnInit {
       }
     }
 
-  public loadDetails(params:string[]) {
-    this.http.get<FlightPlanDTO[]>(this.baseUrl + 'api/flightPlan/' + params[1]).subscribe(result => {
-      this.selectedFlightPlan = result[0];
-      console.log(this.selectedFlightPlan);
-      console.log(this.selectedFlightPlan.initial_location);
-    }, error => console.error(error));
+  public loadDetails(params: string[]) {
+    //agregar params[0] + 'api/FlightPlan' + '/' +  params[1]
+    //testing params[0] + '/' + params[1]
+    console.log(params[0] + '' + params[1]);
+    if (params[0] == 'clean') {
+      this.selectedFlightPlan = null;
+    } else {
+      this.http.get<FlightPlanDTO[]>(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(result => {
+        this.selectedFlightPlan = result[0];
+        console.log(this.selectedFlightPlan);
+        console.log(this.selectedFlightPlan.initial_location);
+      }, error => console.error(error));
+    }
+    
   }
 }
 
@@ -40,6 +48,8 @@ interface FlightPlanDTO {
   company_name: string;
   initial_location: LocationDTO;
   segments: LocationDTO[];
+  final_location: LocationDTO;
+  end_date_flight: Date;
 }
 
 interface LocationDTO {

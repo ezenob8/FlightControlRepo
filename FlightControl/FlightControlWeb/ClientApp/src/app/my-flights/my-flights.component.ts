@@ -1,25 +1,38 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { EventEmitterService } from '../event-emitter.service';
 
 @Component({
   selector: 'my-flights',
-  templateUrl: './my-flights.component.html'
+  templateUrl: './my-flights.component.html',
+  styleUrls: ['./my-flights.component.css']
 })
 
 export class MyFlightsComponent {
-  public flights: FlightDTO[];
+  @Input() flights: FlightDTO[];
+  
 
-
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<FlightDTO[]>(baseUrl + 'api/flights').subscribe(result => {
-      this.flights = result;
-      console.log(this.flights);
-    }, error => console.error(error));
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string,private eventEmitterService: EventEmitterService) {
+    //http.get<FlightDTO[]>(baseUrl + 'api/flights/activeinternalflights').subscribe(result => {
+    //  this.flights = result;
+    //  console.log(this.flights);
+    //}, error => console.error(error));
 
    
 
   }
-  public flightPlanLoadDetailClick(serverId: string, flightId: string) { }
+  public flightPlanLoadDetailClick(serverId: string, flightId: string)
+  {
+    console.log(flightId);
+
+    this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
+  }
+  public delete(flightId: string) {
+    console.log('aaa' + flightId);
+    this.http.delete(this.baseUrl + 'api/flights/' + flightId ).subscribe(result => {
+    }, error => console.error(error));
+    this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, 'clean']);
+  }
 }
 
 

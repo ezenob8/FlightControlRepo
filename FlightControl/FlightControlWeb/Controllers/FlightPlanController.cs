@@ -21,7 +21,6 @@ namespace FlightControlWeb.Controllers
         private readonly FlightPlanDBContext _context;
 
         public FlightPlanController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
-        //public FlightPlansController(ILogger<FlightPlansController> logger)
         {
             _logger = logger;
             _context = context;
@@ -30,47 +29,6 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id?}")]
         public ActionResult Get(string? id)
         {
-            //using (
-            //    var db = new FlightPlanDBContext())
-            //{
-            //    // Create FlightPlan
-            //    Console.WriteLine("Inserting a new flight");
-            //    FlightPlan flightPlan1 = new FlightPlan
-            //    {
-
-            //        Passengers = 266,
-            //        CompanyName = "Aerolineas",
-            //        InitialLocation = new InitialLocation
-            //        {
-
-            //            Longitude = 33.44,
-            //            Latitude = 33.45,
-            //            DateTime = DateTime.Now
-
-            //        },
-            //        Segments = new List<Location>
-            //        {
-            //            new Location
-            //            {
-            //                Latitude=40.0,
-            //                Longitude=40.1
-            //            }
-            //        }
-            //    };
-
-            //    db.Add(flightPlan1);
-
-            //    db.Add(new Flight
-            //    {
-            //        FlightPlan = flightPlan1,
-            //        FlightPlanId = flightPlan1.Id,
-            //        FlightIdentifier = GenerateFlightId.GenerateFlightIdentifier(""),
-            //        IsExternal = false
-            //    });
-
-            //    db.SaveChanges();
-            //}
-
             var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
             var output = from flightPlan in flightPlans
                          select new FlightPlanDTO
@@ -88,11 +46,19 @@ namespace FlightControlWeb.Controllers
                                  Longitude = location.Longitude,
                                  Latitude = location.Latitude,
                                  TimeSpanSeconds = location.TimeSpanSeconds
-                             }).ToArray()
-                         };
+                             }).ToArray(),
+                             EndDateFlight = flightPlan.EndDateFlight,
+                             FinalLocation = (from location in flightPlan.Segments
+                                              select new LocationDTO
+                                              {
+                                                  Longitude = location.Longitude,
+                                                  Latitude = location.Latitude,
+                                                  TimeSpanSeconds = location.TimeSpanSeconds
+                                              }).ToArray().Last()
+                             };
+            
             return Ok(output);
 
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]

@@ -6,15 +6,25 @@
     <tr>
       <th>Passengers</th>
       <th>CompanyName</th>
-      <th>InitialLocation</th>
+      <th>Init-Long</th>
+      <th>Init-Lat</th>
+      <th>Final-Long</th>
+      <th>Final-Long</th>
+      <th>Init-Date</th>
+      <th>Final-Date</th>
     </tr>
   </thead>
   <tbody>
-    <tr >
+    <tr>
       <td>{{ selectedFlightPlan.passengers }}</td>
       <td>{{ selectedFlightPlan.company_name }}</td>
       <td>{{ selectedFlightPlan.initial_location.longitude }}</td>
-    </tr>
-  </tbody>
-</table>
+      <td>{{ selectedFlightPlan.initial_location.latitude }}</td>
+      <td>{{ selectedFlightPlan.final_location.longitude }}</td>
+      <td>{{ selectedFlightPlan.final_location.latitude }}</td>
+      <td>{{ selectedFlightPlan.initial_location.date_time }}</td>
+      <td>{{ selectedFlightPlan.end_date_flight }}</td>
+      </tr>
+    </tbody>
+  </table>
 

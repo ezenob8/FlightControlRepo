@@ -18,5 +18,11 @@ namespace FlightControlWeb.DTO
         public virtual InitialLocationDTO InitialLocation { get; set; }
 
         public LocationDTO[] Segments { get; set; }
-    }
+
+        [JsonProperty("end_date_flight")]
+        public DateTime EndDateFlight { get; set; }
+
+        [JsonProperty("final_location")]
+        public LocationDTO FinalLocation { get; set; }
+}
 }

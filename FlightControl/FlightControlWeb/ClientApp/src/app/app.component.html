@@ -1,54 +1,42 @@
-
 <div class= "container-fluid">
     <div class="row p-3">
       <div class="col-lg-9">
         <div class="bg-alert rounded-lg">
-          <div class="p-2">
+          <div class="p-2" (click)="clean()">
             <agm-map (mapReady)="mapReady($event)">
-              <!--<agm-marker [latitude]="-34.57895241036947" [longitude]="-59.14764404296876" [iconUrl]="icon"></agm-marker>-->
-              <agm-marker *ngFor="let flight of extendedFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon">
-                </agm-marker>
+              <agm-marker *ngFor="let flight of extendedFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
+              </agm-marker>
+              <agm-marker *ngFor="let flight of internalFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick('',flight.flight_id)">
+              </agm-marker>
             </agm-map>
           </div>
         </div>
-        
         <div class="bg-danger rounded-lg p-2" style="height:140px;">
           <flight-details></flight-details>
         </div>
       </div>
       <div class= "col-lg-3 bg-success rounded-lg">
         <div style="height:50%;">
-          <my-flights></my-flights>
+          <my-flights [flights]="internalFlights"></my-flights>
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="customSwitch1" [checked]="showDrop">
+            <label class="custom-control-label" for="customSwitch1">Allow Drop File</label>
+          </div>
+          <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
+                         (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)" *ngIf="showDrop">
+            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+              Drop file here to upload a Flight Plan.
+              <button type="button" (click)="openFileSelector()">Browse Files</button>
+            </ng-template>
+          </ngx-file-drop>
         </div>
         <div>
-          <h5>External Flights</h5>
+          <external-flights [extendedFlights]="extendedFlights"></external-flights>
         </div>
       </div>
     </div>
   </div>
 
 
-<div class="center">
-  <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
-                 (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
-    <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-      Optional custom content that replaces the the entire default content.
-      <button type="button" (click)="openFileSelector()">Browse Files</button>
-    </ng-template>
-  </ngx-file-drop>
-  <div class="upload-table">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-        </tr>
-      </thead>
-      <tbody class="upload-name-style">
-        <tr *ngFor="let item of files; let i=index">
-          <td><strong>{{ item.relativePath }}</strong></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+
 

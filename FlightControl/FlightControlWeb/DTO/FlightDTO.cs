@@ -17,7 +17,7 @@ namespace FlightControlWeb.DTO
         public string CompanyName { get; set; }
 
         [JsonProperty("date_time")]
-        public DateTime DateTime { get; set; }
+        public string DateTime { get; set; }
 
         [JsonProperty("is_external")]
         public bool IsExternal { get; set; }

@@ -1,19 +1,19 @@
 <h5>External Flights</h5>
+<div class="table-wrapper-scroll-y my-custom-scrollbar">
+  <p *ngIf="!extendedFlights"><em>Loading...</em></p>
 
-<p *ngIf="!extendedFlights"><em>Loading...</em></p>
-
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="extendedFlights">
-  <thead>
-    <tr>
-      <th>Passengers</th>
-      <th>CompanyName</th>
-      <th>InitialLocation</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let flight of extendedFlights" (click)="flightPlanLoadDetailClick('',flight.flight_id)">
-      <td>{{ flight.flight_id }}</td>
-      <td>{{ flight.company_name }}</td>
-    </tr>
-  </tbody>
-</table>
+  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="extendedFlights">
+    <thead>
+      <tr>
+        <th>Flight Id</th>
+        <th>Company Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let flight of extendedFlights" (click)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
+        <td>{{ flight.flight_id }}</td>
+        <td>{{ flight.company_name }}</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
