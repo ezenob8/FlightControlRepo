@@ -45,12 +45,6 @@
     <TypeScriptCompile Remove="ClientApp\node_modules\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="ClientApp\src\app\external-flights\external-flights.component.ts" />
-    <None Remove="ClientApp\src\app\flight-details\flight-details.component.ts" />
-    <None Remove="ClientApp\src\app\my-flights\my-flights.component.ts" />
-    <None Remove="ClientApp\src\app\toggle-button.component.ts" />
-  </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Remove="ClientApp\e2e\src\app.e2e-spec.ts" />
