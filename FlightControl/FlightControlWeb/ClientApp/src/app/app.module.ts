@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { FlightDetailsComponent } from './flight-details/flight-details.component';
 import { MyFlightsComponent } from './my-flights/my-flights.component';
 import { ExternalFlightsComponent } from './external-flights/external-flights.component';
+import { ToggleButtonComponent } from './toggle-button.component';
 
 
 
@@ -31,7 +32,7 @@ export function getBaseUrl() {
     }),
     NgxFileDropModule
   ],
-  declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent, ExternalFlightsComponent],
+  declarations: [AppComponent, FlightDetailsComponent, MyFlightsComponent, ExternalFlightsComponent, ToggleButtonComponent],
   providers: [
     { provide: 'BASE_URL', useFactory: getBaseUrl },
     { provide: FitBoundsAccessor, useExisting: forwardRef(() => AgmMarker) },

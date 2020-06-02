@@ -4,11 +4,13 @@ agm-map {
 
 
 * {
-  font-family: Verdana;
+  font-family: Helvetica;
 }
 
 a {
   color: darkblue;
 }
-
+table th {
+  white-space: nowrap;
+}
 

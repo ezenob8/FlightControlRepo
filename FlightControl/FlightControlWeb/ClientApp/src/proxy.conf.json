@@ -1,0 +1,7 @@
+{
+    "/api/*": {
+        "target": "http://rony1.atwebpages.com",
+        "secure": false,
+        "logLevel": "debug"
+    }
+}

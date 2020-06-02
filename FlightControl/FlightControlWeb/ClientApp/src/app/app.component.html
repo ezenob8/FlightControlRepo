@@ -1,7 +1,7 @@
 <div class= "container-fluid">
     <div class="row p-3">
       <div class="col-lg-9">
-        <div class="bg-alert rounded-lg">
+        <div class="rounded-lg">
           <div class="p-2" (click)="clean()">
             <agm-map (mapReady)="mapReady($event)">
               <agm-marker *ngFor="let flight of extendedFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
@@ -11,26 +11,26 @@
             </agm-map>
           </div>
         </div>
-        <div class="bg-danger rounded-lg p-2" style="height:140px;">
+        <div class="rounded-lg p-2" style="height:140px;">
           <flight-details></flight-details>
         </div>
       </div>
-      <div class= "col-lg-3 bg-success rounded-lg">
-        <div style="height:50%;">
+      <div class= "col-lg-3 rounded-lg">
+        <div style="height:52%;">
           <my-flights [flights]="internalFlights"></my-flights>
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="customSwitch1" [checked]="showDrop">
-            <label class="custom-control-label" for="customSwitch1">Allow Drop File</label>
-          </div>
+          
+          <toggle-button (changed)="showDrop=$event">
+          </toggle-button>
+          
           <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
                          (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)" *ngIf="showDrop">
             <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
               Drop file here to upload a Flight Plan.
-              <button type="button" (click)="openFileSelector()">Browse Files</button>
             </ng-template>
           </ngx-file-drop>
+
         </div>
-        <div>
+        <div class="m-1">
           <external-flights [extendedFlights]="extendedFlights"></external-flights>
         </div>
       </div>

@@ -4,19 +4,19 @@
 
   <p *ngIf="!flights"><em>Loading...</em></p>
 
-  <table class='table table-striped' aria-labelledby="tableLabel" *ngIf="flights">
+  <table class="table table-sm table-striped table-dark table-hover table-responsive text-center" *ngIf="flights">
     <thead>
       <tr>
         <th>Flight Id</th>
         <th>Company Name</th>
-        <th></th>
+        <th class="text-center">#</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let flight of flights" (click)="flightPlanLoadDetailClick('',flight.flight_id)">
         <td>{{ flight.flight_id }}</td>
         <td>{{ flight.company_name }}</td>
-        <td><button (click)="delete(flight.flight_id)">X</button></td>
+        <td class="text-center p-1"><button (click)="delete(flight.flight_id)">X</button></td>
       </tr>
     </tbody>
   </table>

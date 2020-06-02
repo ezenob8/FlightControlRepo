@@ -5,6 +5,7 @@ import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 
 import { Observable, interval } from 'rxjs';
 import { EventEmitterService } from './event-emitter.service';
 
+
 declare var google;
 
 
@@ -21,10 +22,9 @@ export class AppComponent {
   public externalFlights: FlightDTO[] = [];
   public extendedFlights: ExtendedFlightDTO[]=[];
   public servers: ServerDTO[] = [];
-  public showDrop: boolean = false;
+  public showDrop: boolean;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string, private eventEmitterService: EventEmitterService) {
-    this.showDrop = false;
     this.mapsAPILoader.load().then(() => {
       this.bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(51.130739, -0.868052), // SW
@@ -48,7 +48,7 @@ export class AppComponent {
           self.servers = resultServer;
           self.servers.forEach(server => {
             //TODO: agregar + 'api/flights'
-            http.get<FlightDTO[]>(server.serverURL).subscribe(resultExternal => {
+            http.get<FlightDTO[]>('http://rony1.atwebpages.com/api/flights/?relative_to=2020-06-02T02:54:00Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];;
               self.externalFlights = resultExternal;
               self.externalFlights.forEach(item => {
@@ -136,7 +136,6 @@ export class AppComponent {
         console.log(droppedFile.relativePath, fileEntry);
 
       }
-      this.showDrop = false;
     }
 
   }
@@ -173,10 +172,7 @@ export class AppComponent {
   public clean() {
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
   }
-  public showDropDiv() {
-    this.showDrop = true;
-    console.log('mostrar');
-  }
+  
 }
 
 interface FlightDTO {

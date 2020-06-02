@@ -42,12 +42,16 @@
     <None Remove="ClientApp\src\app\my-flights\my-flights.component.js" />
     <None Remove="ClientApp\src\app\my-flights\my-flights.component.js.map" />
     <None Remove="ClientApp\src\app\my-flights\my-flights.component.ts" />
+    <None Remove="ClientApp\src\app\toggle-button.component.ts" />
+    <None Remove="ClientApp\src\proxy.conf.json" />
   </ItemGroup>
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\external-flights\external-flights.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\flight-details\flight-details.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\my-flights\my-flights.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\toggle-button.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\proxy.conf.json" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
