@@ -33,7 +33,7 @@ namespace FlightControlWeb
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-            //services.AddCors();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,10 +80,10 @@ namespace FlightControlWeb
                 }
             });
 
-          //  app.UseCors(options =>
-          //options.WithOrigins("http://localhost:21431")
-          //  .AllowAnyMethod()
-          //  .AllowAnyHeader());
+            app.UseCors(options =>
+            options.WithOrigins("https://localhost")
+              .AllowAnyMethod()
+              .AllowAnyHeader());
         }
     }
 }
