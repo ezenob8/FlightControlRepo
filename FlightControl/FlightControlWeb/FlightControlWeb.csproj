@@ -4,7 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
-    <IsPackable>true</IsPackable>
+    <TypeScriptExperimentalDecorators>true</TypeScriptExperimentalDecorators>
+    <!--<IsPackable>true</IsPackable>-->
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 
@@ -27,6 +28,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.9.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,13 +42,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Remove="ClientApp\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\src\app\external-flights\external-flights.component.ts" />
     <None Remove="ClientApp\src\app\flight-details\flight-details.component.ts" />
-    <None Remove="ClientApp\src\app\my-flights\my-flights.component.js" />
-    <None Remove="ClientApp\src\app\my-flights\my-flights.component.js.map" />
     <None Remove="ClientApp\src\app\my-flights\my-flights.component.ts" />
     <None Remove="ClientApp\src\app\toggle-button.component.ts" />
-    <None Remove="ClientApp\src\proxy.conf.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Remove="ClientApp\e2e\src\app.e2e-spec.ts" />
+    <TypeScriptCompile Remove="ClientApp\e2e\src\app.po.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +62,6 @@
     <TypeScriptCompile Include="ClientApp\src\app\flight-details\flight-details.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\my-flights\my-flights.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\toggle-button.component.ts" />
-    <TypeScriptCompile Include="ClientApp\src\proxy.conf.json" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
@@ -82,6 +92,6 @@
     </ItemGroup>
   </Target>
 
-  <ProjectExtensions><VisualStudio><UserProperties clientapp_4package_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties clientapp_4package_1json__JsonSchema="" clientapp_4tsconfig_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

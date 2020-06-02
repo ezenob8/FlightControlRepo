@@ -27,7 +27,7 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpGet("{id?}")]
-        public ActionResult Get(string? id)
+        public ActionResult Get(string id)
         {
             var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
             var output = from flightPlan in flightPlans

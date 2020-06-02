@@ -6,7 +6,7 @@ import { Observable, interval } from 'rxjs';
 import { EventEmitterService } from './event-emitter.service';
 
 
-declare var google;
+declare var google: { maps: { LatLngBounds: new (arg0: any, arg1: any) => any; LatLng: new (arg0: number, arg1: number) => any; }; };
 
 
 @Component({
@@ -17,7 +17,7 @@ declare var google;
 
 export class AppComponent {
 
-  bounds = null;
+  public bounds:any;
   internalFlights: FlightDTO[] = [];
   public externalFlights: FlightDTO[] = [];
   public extendedFlights: ExtendedFlightDTO[]=[];
@@ -78,7 +78,7 @@ export class AppComponent {
     
   }
 
-  protected mapReady(map) {
+  public mapReady(map:any) {
     map.fitBounds(this.bounds);
   }
 
@@ -141,11 +141,11 @@ export class AppComponent {
 
   }
 
-  public fileOver(event) {
+  public fileOver(event:any) {
     console.log(event);
   }
 
-  public fileLeave(event) {
+  public fileLeave(event:any) {
     console.log(event);
   }
 

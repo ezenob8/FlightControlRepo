@@ -13,12 +13,9 @@ import { MyFlightsComponent } from './my-flights/my-flights.component';
 import { ExternalFlightsComponent } from './external-flights/external-flights.component';
 import { ToggleButtonComponent } from './toggle-button.component';
 
-
-
 export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
 }
-
 
 @NgModule({
   imports: [

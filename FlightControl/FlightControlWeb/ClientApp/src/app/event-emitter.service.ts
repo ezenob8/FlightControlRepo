@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, Output } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Injectable({
@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs';
 })
 export class EventEmitterService {
 
-  invokeFlightPlanComponentFunction = new EventEmitter();
+  @Output() invokeFlightPlanComponentFunction: EventEmitter<any> = new EventEmitter<any>(false);
   subsVar: Subscription;
 
   constructor() { }

@@ -4,7 +4,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
   selector: 'toggle-button',
   template: `
   <div class="custom-control custom-switch m-2">
-  <input type="checkbox" class="custom-control-input" id="customSwitch1"  (change)="changed.emit($event.target.checked)" [checked]="showDrop">
+  <input type="checkbox" class="custom-control-input" id="customSwitch1"  (change)="changed.emit($event.target.checked)">
   <label class="custom-control-label" for="customSwitch1">Enable/Disable Drop File</label>
 </div>
   `,
