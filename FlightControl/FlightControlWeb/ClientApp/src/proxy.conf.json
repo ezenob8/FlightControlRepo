@@ -1,7 +1,7 @@
 {
-    "/api/*": {
-        "target": "http://rony1.atwebpages.com",
-        "secure": false,
-        "logLevel": "debug"
-    }
+  "/api/*": {
+    "target": "http://localhost:21431",
+    "secure": false,
+    "logLevel": "debug"
+  }
 }

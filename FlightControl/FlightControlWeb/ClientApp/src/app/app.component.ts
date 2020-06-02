@@ -47,8 +47,9 @@ export class AppComponent {
         http.get<ServerDTO[]>(baseUrl + 'api/servers').subscribe(resultServer => {
           self.servers = resultServer;
           self.servers.forEach(server => {
-            //TODO: agregar + 'api/flights'
-            http.get<FlightDTO[]>('http://rony1.atwebpages.com/api/flights/?relative_to=2020-06-02T02:54:00Z').subscribe(resultExternal => {
+            //TODO: agregar + 'api/flights/relative_to=' + new Date().toISOString()
+            //console.log(new Date().toISOString());
+            http.get<FlightDTO[]>(self.servers[0].serverURL + 'api/flights/relative_to=' + new Date().toISOString()).subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];;
               self.externalFlights = resultExternal;
               self.externalFlights.forEach(item => {
