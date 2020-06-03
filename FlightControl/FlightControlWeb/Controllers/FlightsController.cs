@@ -5,9 +5,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
 
@@ -30,12 +33,13 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get(DateTime relative_to, bool? sync_all)
         {
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).ToList().Where(item => item.FlightPlan.InitialLocation.DateTime.Day == relative_to.Day &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Month == relative_to.Month &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Year == relative_to.Year &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Hour == relative_to.Hour &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Minute == relative_to.Minute &&
-                                                    ((!sync_all.HasValue && !item.IsExternal) || sync_all.HasValue ));
+            
+            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).ToList().Where(item => item.FlightPlan.InitialLocation.DateTime.Day == relative_to.ToUniversalTime().Day &&
+                                                    item.FlightPlan.InitialLocation.DateTime.Month == relative_to.ToUniversalTime().Month &&
+                                                    item.FlightPlan.InitialLocation.DateTime.Year == relative_to.ToUniversalTime().Year &&
+                                                    item.FlightPlan.InitialLocation.DateTime.Hour == relative_to.ToUniversalTime().Hour &&
+                                                    item.FlightPlan.InitialLocation.DateTime.Minute == relative_to.ToUniversalTime().Minute 
+                                                    );
             var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
                                                                        Longitude=flight.FlightPlan.InitialLocation.Longitude,
                                                                        Latitude=flight.FlightPlan.InitialLocation.Latitude,
@@ -43,7 +47,46 @@ namespace FlightControlWeb.Controllers
                                                                        CompanyName=flight.FlightPlan.CompanyName,
                                                                        DateTime=flight.FlightPlan.InitialLocation.DateTime.ToString(),
                                                                        IsExternal =flight.IsExternal};
-            return Ok(output);
+            var addedOutput = output.ToList();
+            var flightsData = new List<FlightDTO>();
+
+            if (this.Request.QueryString.ToString().Contains("sync_all"))
+            {
+                var servers = _context.Servers.ToList();
+
+                foreach (var server in servers)
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var response = client.GetAsync(server.ServerURL + "api/Flights?relative_to=" + DateTime.Now.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'")).Result;
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseContent = response.Content;
+
+                            string responseString = responseContent.ReadAsStringAsync().Result;
+                            var array = JsonConvert.DeserializeObject(responseString);
+                            flightsData.AddRange(((JArray)array).Select(x => new FlightDTO
+                            {
+                                FlightIdentifier = (string)x["flight_id"],
+                                CompanyName = (string)x["company_name"],
+                                Longitude = (double)x["longitude"],
+                                Latitude = (double)x["longitude"],
+                                Passengers = (int)x["passengers"],
+                                DateTime = ((DateTime)x["date_time"]).ToLongDateString(),
+                                IsExternal = true
+                            }).ToList());
+                        }
+                    }
+            
+            }
+           
+                
+            }
+
+            addedOutput.AddRange(flightsData);
+
+            return Ok(addedOutput);
         }
 
         [HttpGet("ActiveInternalFlights")]
