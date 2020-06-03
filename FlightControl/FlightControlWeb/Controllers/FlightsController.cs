@@ -49,7 +49,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("ActiveInternalFlights")]
         public ActionResult ActiveInternalFlights()
         {
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter=> filter.FlightPlan.EndDateFlight >= DateTime.Now && filter.FlightPlan.InitialLocation.DateTime <= DateTime.Now);
+            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter=> filter.FlightPlan.EndDateFlight.ToLocalTime() >= DateTime.Now && filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= DateTime.Now);
             var output = from flight in flights
                          select new FlightDTO
                          {

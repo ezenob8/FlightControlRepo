@@ -20,15 +20,16 @@ namespace FlightControlWeb.Model
         public ICollection<Location> Segments { get; set; }
 
         [JsonProperty("end_date_flight")]
-        public virtual DateTime EndDateFlight {
-                                                get 
-                                                {
-                                                    int seconds = (from segment in this.Segments
-                                                                  select segment.TimeSpanSeconds).Sum();
-                                                    return InitialLocation.DateTime.AddSeconds(seconds);
+        public virtual DateTime EndDateFlight
+        {
+            get
+            {
+                int seconds = (from segment in this.Segments
+                               select segment.TimeSpanSeconds).Sum();
+                return InitialLocation.DateTime.AddSeconds(seconds);
 
-                                                }
-                                               }
+            }
+        }
 
         public Flight Flight { get; set; }
     }

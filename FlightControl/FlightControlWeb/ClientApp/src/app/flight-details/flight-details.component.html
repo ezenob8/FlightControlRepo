@@ -20,10 +20,10 @@
       <td>{{ selectedFlightPlan.company_name }}</td>
       <td>{{ selectedFlightPlan.initial_location.longitude }}</td>
       <td>{{ selectedFlightPlan.initial_location.latitude }}</td>
-      <td>{{ selectedFlightPlan.final_location.longitude }}</td>
-      <td>{{ selectedFlightPlan.final_location.latitude }}</td>
-      <td>{{ selectedFlightPlan.initial_location.date_time.replace('.0000000Z','').replace(' ','&nbsp;&nbsp;&nbsp;&nbsp;') }}</td>
-      <td>{{ selectedFlightPlan.end_date_flight.toLocaleString().replace('T','&nbsp;&nbsp;&nbsp;&nbsp;') }}</td>
+      <td>{{ selected_final_location.longitude }}</td>
+      <td>{{ selected_final_location.latitude }}</td>
+      <td>{{ selected_ini_date_flight.toLocaleString().replace('T','&nbsp;&nbsp;&nbsp;&nbsp;') }}</td>
+      <td>{{ selected_end_date_flight.toLocaleString().replace('T','&nbsp;&nbsp;&nbsp;&nbsp;') }}</td>
       </tr>
     </tbody>
   </table>

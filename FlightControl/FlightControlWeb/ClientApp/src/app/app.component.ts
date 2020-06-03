@@ -49,7 +49,7 @@ export class AppComponent {
           self.servers.forEach(server => {
             //TODO: agregar + 'api/flights/relative_to=' + new Date().toISOString()
             //console.log(new Date().toISOString());
-            http.get<FlightDTO[]>(self.servers[0].serverURL + 'api/flights/relative_to=' + new Date().toISOString()).subscribe(resultExternal => {
+            http.get<FlightDTO[]>(self.servers[0].serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];;
               self.externalFlights = resultExternal;
               self.externalFlights.forEach(item => {
@@ -165,9 +165,13 @@ export class AppComponent {
   }
 
   public flightPlanLoadDetailClick(serverId: string, flightId: string) {
-    console.log(flightId);
+    
+    if(serverId = '')
+      this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
+    else
+      this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
 
-    this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
+    
   }
 
   public clean() {

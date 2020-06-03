@@ -26,6 +26,7 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
+
         [HttpGet("{id?}")]
         public ActionResult Get(string id)
         {
@@ -39,25 +40,17 @@ namespace FlightControlWeb.Controllers
                              {
                                  Longitude = flightPlan.InitialLocation.Longitude,
                                  Latitude = flightPlan.InitialLocation.Latitude,
-                                 DateTime = flightPlan.InitialLocation.DateTime.ToString() + "Z",
+                                 DateTime = flightPlan.InitialLocation.DateTime.ToLocalTime().ToString("yyyy/MM/dd HH:mm:ss"),
                              },
                              Segments = (from location in flightPlan.Segments select new LocationDTO
                              {
                                  Longitude = location.Longitude,
                                  Latitude = location.Latitude,
                                  TimeSpanSeconds = location.TimeSpanSeconds
-                             }).ToArray(),
-                             EndDateFlight = flightPlan.EndDateFlight,
-                             FinalLocation = (from location in flightPlan.Segments
-                                              select new LocationDTO
-                                              {
-                                                  Longitude = location.Longitude,
-                                                  Latitude = location.Latitude,
-                                                  TimeSpanSeconds = location.TimeSpanSeconds
-                                              }).ToArray().Last()
+                             }).ToArray()
                              };
             
-            return Ok(output);
+            return Ok(output.First());
 
         }
 
@@ -80,7 +73,8 @@ namespace FlightControlWeb.Controllers
 
                         Longitude = flightPlanDTO.InitialLocation.Longitude,
                         Latitude = flightPlanDTO.InitialLocation.Latitude,
-                        DateTime = Convert.ToDateTime(flightPlanDTO.InitialLocation.DateTime.Replace('T', ' ').Replace('Z', ' '))                
+                        DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
+                        //DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
                     },
                     Segments = (from segment in flightPlanDTO.Segments
                                select new Location { Longitude = segment.Longitude,
