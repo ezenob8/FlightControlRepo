@@ -1,7 +1,30 @@
 <h5>FlightPlan Details</h5>
-<ul>
-  <li>FlightPlan 1</li>
-  <li>FlightPlan 2</li>
-  <li>FlightPlan 3</li>
-  <li>FlightPlan 4</li>
-</ul>
+<p *ngIf="!selectedFlightPlan"><em>No Flight Plan for details</em></p>
+
+<table class="table table-sm table-striped text-center" aria-labelledby="tableLabel" *ngIf="selectedFlightPlan">
+  <thead class="thead-dark">
+    <tr>
+      <th>Passengers</th>
+      <th>Company Name</th>
+      <th>Init-Long</th>
+      <th>Init-Lat</th>
+      <th>Final-Long</th>
+      <th>Final-Long</th>
+      <th>Init-Date</th>
+      <th>Final-Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ selectedFlightPlan.passengers }}</td>
+      <td>{{ selectedFlightPlan.company_name }}</td>
+      <td>{{ selectedFlightPlan.initial_location.longitude }}</td>
+      <td>{{ selectedFlightPlan.initial_location.latitude }}</td>
+      <td>{{ selectedFlightPlan.final_location.longitude }}</td>
+      <td>{{ selectedFlightPlan.final_location.latitude }}</td>
+      <td>{{ selectedFlightPlan.initial_location.date_time.replace('.0000000Z','').replace(' ','&nbsp;&nbsp;&nbsp;&nbsp;') }}</td>
+      <td>{{ selectedFlightPlan.end_date_flight.toLocaleString().replace('T','&nbsp;&nbsp;&nbsp;&nbsp;') }}</td>
+      </tr>
+    </tbody>
+  </table>
+

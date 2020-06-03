@@ -21,14 +21,13 @@ namespace FlightControlWeb.Controllers
         private readonly FlightPlanDBContext _context;
 
         public FlightPlanController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
-        //public FlightPlansController(ILogger<FlightPlansController> logger)
         {
             _logger = logger;
             _context = context;
         }
 
         [HttpGet("{id?}")]
-        public ActionResult Get(string? id)
+        public ActionResult Get(string id)
         {
             var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
             var output = from flightPlan in flightPlans
@@ -47,11 +46,19 @@ namespace FlightControlWeb.Controllers
                                  Longitude = location.Longitude,
                                  Latitude = location.Latitude,
                                  TimeSpanSeconds = location.TimeSpanSeconds
-                             }).ToArray()
-                         };
+                             }).ToArray(),
+                             EndDateFlight = flightPlan.EndDateFlight,
+                             FinalLocation = (from location in flightPlan.Segments
+                                              select new LocationDTO
+                                              {
+                                                  Longitude = location.Longitude,
+                                                  Latitude = location.Latitude,
+                                                  TimeSpanSeconds = location.TimeSpanSeconds
+                                              }).ToArray().Last()
+                             };
+            
             return Ok(output);
 
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
         }
 
         [HttpPost]

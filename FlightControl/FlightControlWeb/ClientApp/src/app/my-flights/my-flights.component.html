@@ -1,20 +1,26 @@
 <h5>My Flights</h5>
 
-<p *ngIf="!flightPlans"><em>Loading...</em></p>
+<div class="table-wrapper-scroll-y my-custom-scrollbar">
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="flightPlans">
-  <thead>
-    <tr>
-      <th>Passengers</th>
-      <th>CompanyName</th>
-      <th>InitialLocation</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let flightPlan of flightPlans">
-      <td>{{ flightPlan.passengers }}</td>
-      <td>{{ flightPlan.company_name }}</td>
-      <td>{{ flightPlan.initial_location.longitude }}</td>
-    </tr>
-  </tbody>
-</table>
+  <p *ngIf="!flights"><em>Loading...</em></p>
+
+  <table class="table table-sm table-striped table-dark table-hover table-responsive text-center" *ngIf="flights">
+    <thead>
+      <tr>
+        <th>Flight Id</th>
+        <th>Company Name</th>
+        <th class="text-center">#</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let flight of flights" (click)="flightPlanLoadDetailClick('',flight.flight_id)">
+        <td>{{ flight.flight_id }}</td>
+        <td>{{ flight.company_name }}</td>
+        <td class="text-center p-1"><button (click)="delete(flight.flight_id)">X</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+  
