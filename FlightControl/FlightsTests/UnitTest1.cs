@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using FlightControlWeb.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using System;
 
 namespace FlightsTests
 {
@@ -51,19 +52,19 @@ namespace FlightsTests
         {
             // Arrange
             var stubFlightPlanController = new FlightPlanController(new Logger<FlightPlanController>(new LoggerFactory()),
-                new FakeFlightPlanDBContex());
+                new FakeFlightPlanDBContex()); 
             var testFlightPlan = GetTestFlightPlan();
 
             // Act
             stubFlightPlanController.Post(testFlightPlan);
-            var result = (OkObjectResult)stubFlightPlanController.Get("1");
+            var result = stubFlightPlanController.Get("6");
 
 
             var ha = result as OkObjectResult;
             var da = ha.Value as FlightPlanDTO;
 
             // Assert
-            Assert.IsTrue(Comparer.Compare(testFlightPlan, (FlightPlanDTO)result.Value));
+            Assert.IsTrue(Comparer.Compare(testFlightPlan, ha.Value as FlightPlanDTO));
         }
 
         public FlightPlanDTO GetTestFlightPlan()
@@ -72,11 +73,15 @@ namespace FlightsTests
             flightPlan.CompanyName = "Test Company";
             flightPlan.InitialLocation = new InitialLocationDTO();
             flightPlan.InitialLocation.Latitude = 12.5; flightPlan.InitialLocation.Longitude = 12.5;
-            flightPlan.InitialLocation.DateTime = "2020-08-12T15:30:22Z";
+            DateTime dateTime = DateTime.UtcNow;
+            
+            flightPlan.InitialLocation.DateTime = dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'");
             flightPlan.Passengers = 8;
             var mockSegmants = new List<LocationDTO>();
-            var loc1 = new LocationDTO(); loc1.Latitude = 10; loc1.Longitude = 10;
+            var loc1 = new LocationDTO(); loc1.Latitude = 10; loc1.Longitude = 10; loc1.TimeSpanSeconds = 10;
             mockSegmants.Add(loc1);
+            flightPlan.EndDateFlight = new System.DateTime(2020, 8, 5, 4, 20, 13);
+            flightPlan.FinalLocation = loc1;
             flightPlan.Segments = mockSegmants.ToArray();
 
             return flightPlan;
