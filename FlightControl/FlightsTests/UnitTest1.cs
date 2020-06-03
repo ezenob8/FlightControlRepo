@@ -11,6 +11,8 @@ namespace FlightsTests
     {
         public static bool Compare(InitialLocation x, InitialLocation y)
         {
+            if (x == null && y == null)
+                return true;
             if (x.DateTime == y.DateTime && x.FlightPlanId == y.FlightPlanId && x.Id == y.Id
                 && x.Latitude == y.Latitude && x.Longitude == y.Longitude)
                 return true;
@@ -18,6 +20,8 @@ namespace FlightsTests
         }
         public static bool Compare(Flight x, Flight y)
         {
+            if (x == null && y == null)
+                return true;
             // Not checking the flight plan in the flight
             if (x.CompanyName == y.CompanyName && x.DateTime == y.DateTime
                 && x.FlightPlanId == y.FlightPlanId && x.Id == y.Id
@@ -28,7 +32,9 @@ namespace FlightsTests
         }
         public static bool Compare(FlightPlan x, FlightPlan y)
         {
-            if (x.CompanyName == y.CompanyName && Compare(x.Flight, y.Flight) && x.Id == y.Id && Compare(x.InitialLocation,y.InitialLocation)
+            if (x == null && y == null)
+                return true;
+            if (x.CompanyName == y.CompanyName && Compare(x.Flight, y.Flight) && x.Id == y.Id && Compare(x.InitialLocation, y.InitialLocation)
                 && x.Passengers == y.Passengers && x.Segments == y.Segments)
                 return true;
             else return false;
@@ -49,11 +55,13 @@ namespace FlightsTests
 
             long check = 1;
             var rawData = dBContext.Find<FlightPlan>(check);
-            rawData.Flight = dBContext.Find<Flight>(rawData.Id);
-            rawData.InitialLocation = dBContext.Find<InitialLocation>(rawData.Id);
-
+            if (rawData != null)
+            {
+                rawData.Flight = dBContext.Find<Flight>(rawData.Id);
+                rawData.InitialLocation = dBContext.Find<InitialLocation>(rawData.Id);
+            } 
             // Act
-            Microsoft.AspNetCore.Mvc.OkObjectResult data = (Microsoft.AspNetCore.Mvc.OkObjectResult)flightsController.Get(1);
+            Microsoft.AspNetCore.Mvc.OkObjectResult data = (Microsoft.AspNetCore.Mvc.OkObjectResult)flightsController.Get("1");
 
             //Assert
             Assert.IsTrue(Comparer.Compare((FlightPlan)data.Value, rawData));

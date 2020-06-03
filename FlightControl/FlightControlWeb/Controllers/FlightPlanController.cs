@@ -30,23 +30,6 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id?}")]
         public ActionResult Get(string? id)
         {
-            //using (
-            //    var db = new FlightPlanDBContext())
-            //{
-            //    // Create FlightPlan
-            //    Console.WriteLine("Inserting a new flight");
-            //    FlightPlan flightPlan1 = new FlightPlan
-            //    {
-
-            //        Passengers = 266,
-            //        CompanyName = "Aerolineas",
-            //        InitialLocation = new InitialLocation
-            //        {
-
-                    // are Segments kept as lists?
-                    // var segments = db.Find<Location>(longId);
-                    // found.Segments ? segments
-
             var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
             var output = from flightPlan in flightPlans
                          select new FlightPlanDTO
@@ -113,9 +96,7 @@ namespace FlightControlWeb.Controllers
 
                 db.SaveChanges();
             }
-
-
-            return Created("", null);
+            return Created("", flightPlanDTO);
         }
 
     }

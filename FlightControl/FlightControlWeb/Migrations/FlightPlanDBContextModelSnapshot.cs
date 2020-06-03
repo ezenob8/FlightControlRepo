@@ -127,6 +127,7 @@ namespace FlightControlWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServerURL")
+                        .HasColumnName("ServerURL")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
