@@ -23,6 +23,8 @@ export class AppComponent {
   public extendedFlights: ExtendedFlightDTO[]=[];
   public servers: ServerDTO[] = [];
   public showDrop: boolean;
+  public selectedFlightPlan: FlightPlanDTO;
+  public showLine: boolean;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string, private eventEmitterService: EventEmitterService) {
     this.mapsAPILoader.load().then(() => {
@@ -49,7 +51,7 @@ export class AppComponent {
           self.servers.forEach(server => {
             //TODO: agregar + 'api/flights/relative_to=' + new Date().toISOString()
             //console.log(new Date().toISOString());
-            http.get<FlightDTO[]>(self.servers[0].serverURL + 'api/flights/relative_to=' + new Date().toISOString()).subscribe(resultExternal => {
+            http.get<FlightDTO[]>(self.servers[0].serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];;
               self.externalFlights = resultExternal;
               self.externalFlights.forEach(item => {
@@ -165,14 +167,32 @@ export class AppComponent {
   }
 
   public flightPlanLoadDetailClick(serverId: string, flightId: string) {
-    console.log(flightId);
+    
+    if(serverId = '')
+      this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
+    else
+      this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
 
-    this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
+    if (serverId == 'clean') {
+      this.selectedFlightPlan = null;
+    } else {
+      this.http.get<FlightPlanDTO>(serverId + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
+        let sum: number = 0;
+        result.segments.forEach((segment, index) =>
+          sum += segment.timespan_seconds
+        );
+        this.selectedFlightPlan = result;
+      }, error => console.error(error));
+    }
+
+    
   }
 
   public clean() {
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
+    
   }
+
   
 }
 
@@ -196,3 +216,22 @@ interface ServerDTO {
   serverURL: string;
 }
 
+interface FlightPlanDTO {
+  passengers: number;
+  company_name: string;
+  initial_location: InitialLocationDTO;
+  segments: LocationDTO[];
+}
+
+interface LocationDTO {
+  longitude: number;
+  latitude: number;
+  timespan_seconds: number;
+}
+
+
+interface InitialLocationDTO {
+  longitude: number;
+  latitude: number;
+  date_time: string;
+}

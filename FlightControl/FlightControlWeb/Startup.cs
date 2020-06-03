@@ -81,7 +81,7 @@ namespace FlightControlWeb
             });
 
             app.UseCors(options =>
-            options.WithOrigins("https://localhost")
+            options.WithOrigins(Configuration.GetValue<string>("serverURL"))
               .AllowAnyMethod()
               .AllowAnyHeader());
         }
