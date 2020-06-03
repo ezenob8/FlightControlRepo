@@ -97,11 +97,11 @@ namespace FlightControlWeb.Controllers
                          select new FlightDTO
                          {
                              FlightIdentifier = flight.FlightIdentifier,
-                             Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime,
+                             Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
                                                                         DateTime.Now,
                                                                         flight.FlightPlan.InitialLocation,
                                                                         flight.FlightPlan.Segments.ToArray()).Longitude,
-                             Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime,
+                             Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
                                                                         DateTime.Now,
                                                                         flight.FlightPlan.InitialLocation,
                                                                         flight.FlightPlan.Segments.ToArray()).Latitude,

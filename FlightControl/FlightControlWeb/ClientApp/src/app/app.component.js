@@ -133,10 +133,23 @@ var AppComponent = /** @class */ (function () {
         });
     };
     AppComponent.prototype.flightPlanLoadDetailClick = function (serverId, flightId) {
+        var _this = this;
         if (serverId = '')
             this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
         else
             this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
+        if (serverId == 'clean') {
+            this.selectedFlightPlan = null;
+        }
+        else {
+            this.http.get(serverId + 'api/FlightPlan' + '/' + flightId).subscribe(function (result) {
+                var sum = 0;
+                result.segments.forEach(function (segment, index) {
+                    return sum += segment.timespan_seconds;
+                });
+                _this.selectedFlightPlan = result;
+            }, function (error) { return console.error(error); });
+        }
     };
     AppComponent.prototype.clean = function () {
         this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);

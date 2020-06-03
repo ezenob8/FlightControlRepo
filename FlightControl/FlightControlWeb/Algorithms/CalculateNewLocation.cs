@@ -26,13 +26,13 @@ namespace FlightControlWeb.Algorithms
                 }
                 else if (seconds < sumSeconds)
                 {
-                    var sCoord = new GeoCoordinate(actualCoordSegment.Latitude, actualCoordSegment.Longitude);
-                    var eCoord = new GeoCoordinate(location.Latitude, location.Longitude);
+                    var initCoord = new GeoCoordinate(actualCoordSegment.Latitude, actualCoordSegment.Longitude);
+                    var finalCoord = new GeoCoordinate(location.Latitude, location.Longitude);
 
                     var difLat = Math.Sqrt(Math.Pow((actualCoordSegment.Latitude - location.Latitude), 2));
                     var difLong = Math.Sqrt(Math.Pow((actualCoordSegment.Longitude - location.Longitude), 2));
 
-                    var angle = Math.Atan(difLat / difLong) * (Math.PI / 180);
+                   
 
                     //var distance = sCoord.GetDistanceTo(eCoord);
                     var distance = Math.Sqrt(Math.Pow((actualCoordSegment.Latitude - location.Latitude), 2) +
@@ -40,8 +40,37 @@ namespace FlightControlWeb.Algorithms
 
                     distance = (distance / location.TimeSpanSeconds) * (seconds - sumPrevSeconds);
 
-                    var newLat = actualCoordSegment.Latitude + Math.Sin(angle) * distance;
-                    var newLong = actualCoordSegment.Longitude + Math.Cos(angle) * distance;
+                    var angle = Math.Atan(difLat / difLong) * (Math.PI / 180);
+                    var deltaLat = 1.0;
+                    var deltaLong = 1.0;
+
+                    if (finalCoord.Longitude - initCoord.Longitude > 0 &&
+                        finalCoord.Latitude - initCoord.Latitude < 0)
+                    {
+                        angle -= (Math.PI / 2);
+                        deltaLat *= (-1.0);
+                    }
+
+                    else if (finalCoord.Longitude - initCoord.Longitude < 0 &&
+                        finalCoord.Latitude - initCoord.Latitude > 0)
+                    {
+                        angle += (Math.PI / 2);
+                        deltaLong *= (-1.0);
+                    }
+
+                    else if (finalCoord.Longitude - initCoord.Longitude < 0 &&
+                        finalCoord.Latitude - initCoord.Latitude < 0)
+                    {
+                        angle += Math.PI;
+                        deltaLat *= (-1.0);
+                        deltaLong *= (-1.0);
+                    }
+
+                    deltaLat *= (Math.Sin(angle) * distance);
+                    deltaLong *= (Math.Cos(angle) * distance);
+
+                    var newLat = actualCoordSegment.Latitude + deltaLat;
+                    var newLong = actualCoordSegment.Longitude + deltaLong;
 
                     actualCoordinates = new Coordinates { Longitude = newLong, Latitude = newLat };
 
