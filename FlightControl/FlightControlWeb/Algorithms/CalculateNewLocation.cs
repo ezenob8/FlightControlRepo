@@ -40,7 +40,7 @@ namespace FlightControlWeb.Algorithms
 
                     distance = (distance / location.TimeSpanSeconds) * (seconds - sumPrevSeconds);
 
-                    var angle = Math.Atan(difLat / difLong) * (Math.PI / 180);
+                    var angle = Math.Atan(difLat / difLong);
                     var deltaLat = 1.0;
                     var deltaLong = 1.0;
 

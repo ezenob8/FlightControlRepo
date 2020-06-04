@@ -23,8 +23,8 @@ export class AppComponent {
   public extendedFlights: ExtendedFlightDTO[]=[];
   public servers: ServerDTO[] = [];
   public showDrop: boolean;
-  public selectedFlightPlan: FlightPlanDTO;
-  public showLine: boolean;
+  public selectedFlightPlan$: Observable<FlightPlanDTO>;
+  public showLine: boolean =false;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string, private eventEmitterService: EventEmitterService) {
     this.mapsAPILoader.load().then(() => {
@@ -166,27 +166,26 @@ export class AppComponent {
 
   }
 
-  public flightPlanLoadDetailClick(serverId: string, flightId: string) {
-    
-    if(serverId = '')
-      this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
-    else
-      this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
+  public flightPlanLoadDetailClick(serverURL: string, flightId: string) {
+    if (serverURL == '')
+        serverURL = this.baseUrl;
+    this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
 
-    if (serverId == 'clean') {
-      this.selectedFlightPlan = null;
+    if (serverURL == 'clean') {
+      
     } else {
-      this.http.get<FlightPlanDTO>(serverId + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
-        let sum: number = 0;
-        result.segments.forEach((segment, index) =>
-          sum += segment.timespan_seconds
-        );
-        this.selectedFlightPlan = result;
-      }, error => console.error(error));
+      //this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
+      //  this.selectedFlightPlan = result;
+      //  console.log(this.selectedFlightPlan);
+      //}, error => console.error(error), () => this.showLine = true);
+      this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
     }
 
     
   }
+
+
+
 
   public clean() {
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
