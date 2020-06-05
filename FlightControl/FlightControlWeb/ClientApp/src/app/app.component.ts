@@ -24,6 +24,7 @@ export class AppComponent {
   public servers: ServerDTO[] = [];
   public showDrop: boolean;
   public selectedFlightPlan$: Observable<FlightPlanDTO>;
+  public latitud: number;
   public showLine: boolean =false;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string, private eventEmitterService: EventEmitterService) {
@@ -178,7 +179,10 @@ export class AppComponent {
       //  this.selectedFlightPlan = result;
       //  console.log(this.selectedFlightPlan);
       //}, error => console.error(error), () => this.showLine = true);
+
+      console.log(serverURL);
       this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
+
     }
 
     

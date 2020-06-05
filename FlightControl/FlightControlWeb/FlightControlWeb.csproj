@@ -37,12 +37,32 @@
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\dist\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\dist\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="ClientApp\dist\**" />
+    <EmbeddedResource Remove="ClientApp\dist\**" />
+    <TypeScriptCompile Remove="ClientApp\dist\**" />
     <TypeScriptCompile Remove="ClientApp\node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\dist\3rdpartylicenses.txt" />
+    <None Remove="ClientApp\dist\assets\images\plane-black.png" />
+    <None Remove="ClientApp\dist\assets\images\plane-rojo.png" />
+    <None Remove="ClientApp\dist\assets\images\plane.png" />
+    <None Remove="ClientApp\dist\index.html" />
+    <None Remove="ClientApp\dist\main-es2015.6e4714506cf02342872b.js" />
+    <None Remove="ClientApp\dist\main-es5.6e4714506cf02342872b.js" />
+    <None Remove="ClientApp\dist\polyfills-es2015.5b10b8fd823b6392f1fd.js" />
+    <None Remove="ClientApp\dist\polyfills-es5.3e8196928d184a6e5319.js" />
+    <None Remove="ClientApp\dist\runtime-es2015.c5fa8325f89fc516600b.js" />
+    <None Remove="ClientApp\dist\runtime-es5.c5fa8325f89fc516600b.js" />
+    <None Remove="ClientApp\dist\styles.0002ce8574fc43bb94ec.css" />
   </ItemGroup>
 
 

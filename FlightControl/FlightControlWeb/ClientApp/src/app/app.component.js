@@ -24,6 +24,7 @@ var AppComponent = /** @class */ (function () {
         this.externalFlights = [];
         this.extendedFlights = [];
         this.servers = [];
+        this.showLine = false;
         this.icon = {
             url: 'assets/images/plane-rojo.png',
             scaledSize: {
@@ -132,23 +133,19 @@ var AppComponent = /** @class */ (function () {
             .subscribe(function (data) {
         });
     };
-    AppComponent.prototype.flightPlanLoadDetailClick = function (serverId, flightId) {
-        var _this = this;
-        if (serverId = '')
-            this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
-        else
-            this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
-        if (serverId == 'clean') {
-            this.selectedFlightPlan = null;
+    AppComponent.prototype.flightPlanLoadDetailClick = function (serverURL, flightId) {
+        if (serverURL == '')
+            serverURL = this.baseUrl;
+        this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
+        if (serverURL == 'clean') {
         }
         else {
-            this.http.get(serverId + 'api/FlightPlan' + '/' + flightId).subscribe(function (result) {
-                var sum = 0;
-                result.segments.forEach(function (segment, index) {
-                    return sum += segment.timespan_seconds;
-                });
-                _this.selectedFlightPlan = result;
-            }, function (error) { return console.error(error); });
+            //this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
+            //  this.selectedFlightPlan = result;
+            //  console.log(this.selectedFlightPlan);
+            //}, error => console.error(error), () => this.showLine = true);
+            console.log(serverURL);
+            this.selectedFlightPlan$ = this.http.get(serverURL + 'api/FlightPlan' + '/' + flightId);
         }
     };
     AppComponent.prototype.clean = function () {
