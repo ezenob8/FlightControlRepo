@@ -50,8 +50,8 @@ namespace FlightControlWeb.Controllers
                 db.Add(server);
                 db.SaveChanges();
             }
-            return Ok(null);
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
+
+            return Created("", null);
         }
 
         [HttpDelete("{id}")]
