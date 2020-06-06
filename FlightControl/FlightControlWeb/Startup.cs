@@ -16,6 +16,8 @@ namespace FlightControlWeb
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,6 +28,15 @@ namespace FlightControlWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost");
+                                  });
+            });
+
             services.AddEntityFrameworkSqlServer().AddDbContext<FlightPlanDBContext>();
             services.AddControllersWithViews().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // In production, the Angular files will be served from this directory
@@ -33,7 +44,6 @@ namespace FlightControlWeb
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +68,7 @@ namespace FlightControlWeb
             }
 
             app.UseRouting();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints =>
             {
@@ -80,10 +91,7 @@ namespace FlightControlWeb
                 }
             });
 
-            //app.UseCors(options =>
-            //options.WithOrigins("https://localhost")
-            //  .AllowAnyMethod()
-            //  .AllowAnyHeader());
+            
         }
     }
 }
