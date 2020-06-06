@@ -121,7 +121,7 @@ namespace FlightControlWeb.Controllers
             _context.FlightPlans.Remove(flightPlan);
             _context.Flight.Remove(flight);
             _context.SaveChanges();
-            return Ok(null);
+            return NoContent();
         }
 
     }
