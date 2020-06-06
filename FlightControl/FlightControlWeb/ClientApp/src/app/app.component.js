@@ -58,9 +58,7 @@ var AppComponent = /** @class */ (function () {
             http.get(baseUrl + 'api/servers').subscribe(function (resultServer) {
                 self.servers = resultServer;
                 self.servers.forEach(function (server) {
-                    //TODO: agregar + 'api/flights/relative_to=' + new Date().toISOString()
-                    //console.log(new Date().toISOString());
-                    http.get(self.servers[0].serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
+                    http.get(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
                         var ext = [];
                         ;
                         self.externalFlights = resultExternal;
