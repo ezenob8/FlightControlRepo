@@ -29,78 +29,83 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
-       
         [HttpGet]
         public ActionResult Get(DateTime relative_to, bool? sync_all)
         {
-
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter => filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= relative_to && relative_to <= filter.FlightPlan.EndDateFlight.ToLocalTime());
-
-            var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
-                                                                       Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
-                                                                                                                  relative_to,
-                                                                                                                  flight.FlightPlan.InitialLocation,
-                                                                                                                  flight.FlightPlan.Segments.ToArray()).Longitude,
-                                                                       Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
-                                                                                                                 relative_to,
-                                                                                                                 flight.FlightPlan.InitialLocation,
-                                                                                                                 flight.FlightPlan.Segments.ToArray()).Latitude,
-                                                                       Passengers=flight.FlightPlan.Passengers,
-                                                                       CompanyName=flight.FlightPlan.CompanyName,
-                                                                       DateTime=flight.FlightPlan.InitialLocation.DateTime.ToString(),
-                                                                       IsExternal =flight.IsExternal};
+            IEnumerable<Flight> flights = DataBaseCalls.GetFlights(_context, relative_to);
+            IEnumerable<FlightDTO> output = ParseFlight(relative_to, flights);
             var addedOutput = output.ToList();
             var flightsData = new List<FlightDTO>();
 
             if (this.Request.QueryString.ToString().Contains("sync_all"))
             {
-                var servers = _context.Servers.ToList();
-
+                List<Server> servers = DataBaseCalls.GetServers(_context);
                 foreach (var server in servers)
                 {
-                    using (var client = new HttpClient())
-                    {
-                        var response = client.GetAsync(server.ServerURL + "api/Flights?relative_to=" + DateTime.Now.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'")).Result;
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var responseContent = response.Content;
-
-                            string responseString = responseContent.ReadAsStringAsync().Result;
-                            var array = JsonConvert.DeserializeObject(responseString);
-                            flightsData.AddRange(((JArray)array).Select(x => new FlightDTO
-                            {
-                                FlightIdentifier = (string)x["flight_id"],
-                                CompanyName = (string)x["company_name"],
-                                Longitude = (double)x["longitude"],
-                                Latitude = (double)x["longitude"],
-                                Passengers = (int)x["passengers"],
-                                DateTime = ((DateTime)x["date_time"]).ToLongDateString(),
-                                IsExternal = true
-                            }).ToList());
-                        }
-                    }
-            
+                    GetFlightsFromServer(flightsData, server);
+                }
             }
-           
-                
-            }
-
             addedOutput.AddRange(flightsData);
 
             return Ok(addedOutput);
         }
-        
+
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
             Flight flight = _context.Flight.Include(item => item.FlightPlan).Where(item => item.FlightIdentifier == id).First();
             FlightPlan flightPlan = flight.FlightPlan;
-            _context.FlightPlans.Remove(flightPlan);
-            _context.Flight.Remove(flight);
-            _context.SaveChanges();
+
+            DataBaseCalls.RemoveFlight(_context, flight, flightPlan);
             return NoContent();
         }
 
+        private static void GetFlightsFromServer(List<FlightDTO> flightsData, Server server)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = client.GetAsync(server.ServerURL + "api/Flights?relative_to="
+                    + DateTime.Now.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'")).Result;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = response.Content;
+
+                    string responseString = responseContent.ReadAsStringAsync().Result;
+                    var array = JsonConvert.DeserializeObject(responseString);
+                    flightsData.AddRange(((JArray)array).Select(x => new FlightDTO
+                    {
+                        FlightIdentifier = (string)x["flight_id"],
+                        CompanyName = (string)x["company_name"],
+                        Longitude = (double)x["longitude"],
+                        Latitude = (double)x["longitude"],
+                        Passengers = (int)x["passengers"],
+                        DateTime = ((DateTime)x["date_time"]).ToLongDateString(),
+                        IsExternal = true
+                    }).ToList());
+                }
+            }
+        }
+
+        private static IEnumerable<FlightDTO> ParseFlight(DateTime relative_to, IEnumerable<Flight> flights)
+        {
+            return from flight in flights
+                   select new FlightDTO
+                   {
+                       FlightIdentifier = flight.FlightIdentifier,
+                       Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                     relative_to,
+                                                                                     flight.FlightPlan.InitialLocation,
+                                                                                     flight.FlightPlan.Segments.ToArray()).Longitude,
+                       Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                    relative_to,
+                                                                                    flight.FlightPlan.InitialLocation,
+                                                                                    flight.FlightPlan.Segments.ToArray()).Latitude,
+                       Passengers = flight.FlightPlan.Passengers,
+                       CompanyName = flight.FlightPlan.CompanyName,
+                       DateTime = flight.FlightPlan.InitialLocation.DateTime.ToString(),
+                       IsExternal = flight.IsExternal
+                   };
+        }
     }
 }

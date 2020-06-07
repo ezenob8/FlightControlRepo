@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
+
 namespace FlightControlWeb.Controllers
 {
     [ApiController]
@@ -26,42 +27,28 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            
-            //return Ok(null);
-            return Ok(from server in _context.Servers
-                      select new ServerDTO
-                      {
-                          ServerId = server.ServerId,
-                          ServerURL = server.ServerURL
-                      });
+            return base.Ok(DataBaseCalls.GetListOfServers(_context));
         }
 
         [HttpPost]
         public ActionResult Post(ServerDTO serverDTO)
         {
-            using (var db = new FlightPlanDBContext())
+            Server server = new Server
             {
-                Server server = new Server
-                {
-                    ServerId = serverDTO.ServerId,
-                    ServerURL = serverDTO.ServerURL
-                };
+                ServerId = serverDTO.ServerId,
+                ServerURL = serverDTO.ServerURL
+            };
+            DataBaseCalls.AddServer(_context, server);
 
-                db.Add(server);
-                db.SaveChanges();
-            }
-
-            return Created("", null);
+            return Ok(server);
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
             Server server = _context.Servers.Where(item => item.ServerId == id).First();
-            _context.Servers.Remove(server);
-            _context.SaveChanges();
-            return NoContent(); 
+            DataBaseCalls.DeleteServer(_context, server);
+            return NoContent();
         }
-
     }
 }

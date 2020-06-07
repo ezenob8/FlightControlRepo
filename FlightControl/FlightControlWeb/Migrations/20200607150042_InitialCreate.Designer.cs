@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightControlWeb.Migrations
 {
     [DbContext(typeof(FlightPlanDBContext))]
-    [Migration("20200531140256_InitialCreate")]
+    [Migration("20200607150042_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,6 +129,7 @@ namespace FlightControlWeb.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ServerURL")
+                        .HasColumnName("ServerURL")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
