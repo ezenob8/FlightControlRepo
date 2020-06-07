@@ -26,8 +26,8 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public async Task<ActionResult<ServerDTO>> Get()
         {
-            var servers = await _context.Servers.ToListAsync<Server>();
-            //return Ok(null);
+            var servers = await DataBaseCalls.GetListOfServers(_context);
+
             return Ok(from server in servers
                       select new ServerDTO
                       {
@@ -39,17 +39,13 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ServerDTO serverDTO)
         {
-            using (var db = new FlightPlanDBContext())
-            {
-                Server server = new Server
-                {
-                    ServerId = serverDTO.ServerId,
-                    ServerURL = serverDTO.ServerURL
-                };
 
-                db.Add(server);
-                await db.SaveChangesAsync();
-            }
+            Server server = new Server
+            {
+                ServerId = serverDTO.ServerId,
+                ServerURL = serverDTO.ServerURL
+            };
+            DataBaseCalls.AddServer(_context, server);
 
             return Created("", null);
         }
@@ -57,10 +53,8 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            Server server = _context.Servers.Where(item => item.ServerId == id).First();
-            _context.Servers.Remove(server);
-            await _context.SaveChangesAsync();
-            return NoContent(); 
+            DataBaseCalls.DeleteServer(_context, id);
+            return NoContent();
         }
 
     }

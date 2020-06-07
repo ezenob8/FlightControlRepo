@@ -9,44 +9,26 @@ namespace FlightControlWeb.Model
 {
     static public class DataBaseCalls
     {
-        public static IQueryable<FlightPlanDTO> FindFlightPlanId(FlightPlanDBContext _context, string id)
+        public static IQueryable<FlightPlan> FindFlightPlanId(FlightPlanDBContext _context, string id)
         {
-            var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation)
+            return _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation)
                 .Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
-            var output = from flightPlan in flightPlans
-                         select new FlightPlanDTO
-                         {
-                             Passengers = flightPlan.Passengers,
-                             CompanyName = flightPlan.CompanyName,
-                             InitialLocation = new InitialLocationDTO
-                             {
-                                 Longitude = flightPlan.InitialLocation.Longitude,
-                                 Latitude = flightPlan.InitialLocation.Latitude,
-                                 DateTime = flightPlan.InitialLocation.DateTime.ToLocalTime().ToString("yyyy/MM/dd HH:mm:ss"),
-                             },
-                             Segments = (from location in flightPlan.Segments
-                                         select new LocationDTO
-                                         {
-                                             Longitude = location.Longitude,
-                                             Latitude = location.Latitude,
-                                             TimeSpanSeconds = location.TimeSpanSeconds
-                                         }).ToArray()
-                         };
-            return output;
         }
 
-        public static void AddAFlightPlanAndAFlight(FlightPlanDBContext _context, FlightPlan flightPlan, Flight flight)
+        public static async void AddAFlightPlanAndAFlight(FlightPlanDBContext _context, FlightPlan flightPlan, Flight flight)
         {
             _context.Add(flightPlan);
             _context.Add(flight);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public static void RemoveFlight(FlightPlanDBContext _context, Flight flight, FlightPlan flightPlan)
+        public static async void RemoveFlight(FlightPlanDBContext _context, string id)
         {
+            Flight flight = _context.Flight.Include(item => item.FlightPlan).Where(item => item.FlightIdentifier == id).First();
+            FlightPlan flightPlan = flight.FlightPlan;
             _context.FlightPlans.Remove(flightPlan);
             _context.Flight.Remove(flight);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public static IEnumerable<Flight> GetFlights(FlightPlanDBContext _context, DateTime relative_to)
@@ -59,26 +41,22 @@ namespace FlightControlWeb.Model
             return _context.Servers.ToList();
         }
 
-        public static IQueryable<ServerDTO> GetListOfServers(FlightPlanDBContext _context)
+        public static async Task<List<Server>> GetListOfServers(FlightPlanDBContext _context)
         {
-            return from server in _context.Servers
-                   select new ServerDTO
-                   {
-                       ServerId = server.ServerId,
-                       ServerURL = server.ServerURL
-                   };
+            return await _context.Servers.ToListAsync();
         }
 
-        public static void AddServer(FlightPlanDBContext _context, Server server)
+        public static async void AddServer(FlightPlanDBContext _context, Server server)
         {
             _context.Add(server);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public static void DeleteServer(FlightPlanDBContext _context, Server server)
+        public static async void DeleteServer(FlightPlanDBContext _context, string id)
         {
+            Server server = _context.Servers.Where(item => item.ServerId == id).First();
             _context.Servers.Remove(server);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
