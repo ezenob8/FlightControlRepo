@@ -135,7 +135,6 @@ export class AppComponent {
 
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
 
       }
     }
@@ -157,7 +156,6 @@ export class AppComponent {
     const headers = new HttpHeaders({
       'security-token': 'mytoken'
     });
-    console.log(this.baseUrl);
     this.http.post<FlightDTO>(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
       .subscribe(data => {
 
@@ -173,12 +171,6 @@ export class AppComponent {
     if (serverURL == 'clean') {
       
     } else {
-      //this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
-      //  this.selectedFlightPlan = result;
-      //  console.log(this.selectedFlightPlan);
-      //}, error => console.error(error), () => this.showLine = true);
-
-      console.log(serverURL);
       this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
 
     }
@@ -190,7 +182,8 @@ export class AppComponent {
 
 
   public clean() {
-    this.selectedFlightPlan$.forEach(data => data.segments = null);
+    //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(this.baseUrl + 'api/FlightPlan' + '/' + '');
+
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     
   }

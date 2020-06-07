@@ -107,7 +107,6 @@ var AppComponent = /** @class */ (function () {
             else {
                 // It was a directory (empty directories are added, otherwise only files)
                 var fileEntry = droppedFile.fileEntry;
-                console.log(droppedFile.relativePath, fileEntry);
             }
         };
         for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
@@ -126,7 +125,6 @@ var AppComponent = /** @class */ (function () {
         var headers = new http_1.HttpHeaders({
             'security-token': 'mytoken'
         });
-        console.log(this.baseUrl);
         this.http.post(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
             .subscribe(function (data) {
         });
@@ -138,16 +136,11 @@ var AppComponent = /** @class */ (function () {
         if (serverURL == 'clean') {
         }
         else {
-            //this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
-            //  this.selectedFlightPlan = result;
-            //  console.log(this.selectedFlightPlan);
-            //}, error => console.error(error), () => this.showLine = true);
-            console.log(serverURL);
             this.selectedFlightPlan$ = this.http.get(serverURL + 'api/FlightPlan' + '/' + flightId);
         }
     };
     AppComponent.prototype.clean = function () {
-        this.selectedFlightPlan$.forEach(function (data) { return data.segments = null; });
+        //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(this.baseUrl + 'api/FlightPlan' + '/' + '');
         this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     };
     AppComponent = __decorate([
