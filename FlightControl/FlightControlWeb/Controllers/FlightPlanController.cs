@@ -31,7 +31,7 @@ namespace FlightControlWeb.Controllers
         [HttpGet("{id?}")]
         public async Task<ActionResult<FlightPlanDTO>> Get(string id)
         {
-            var flightPlans = DataBaseCalls.FindFlightPlanId(_context, id);
+            var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
             var output = from flightPlan in flightPlans
                          select new FlightPlanDTO
                          {
@@ -75,6 +75,7 @@ namespace FlightControlWeb.Controllers
                         Longitude = flightPlanDTO.InitialLocation.Longitude,
                         Latitude = flightPlanDTO.InitialLocation.Latitude,
                         DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
+                        //DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
                     },
                     Segments = (from segment in flightPlanDTO.Segments
                                select new Location { Longitude = segment.Longitude,
@@ -83,6 +84,7 @@ namespace FlightControlWeb.Controllers
                                                    }).ToList()
                 };
 
+                db.Add(flightPlan);
                 string lastId = !db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).Any() ? "AAAA-0000" : db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).First().Flight.FlightIdentifier;
                 Flight flight = new Flight
                 {
@@ -92,7 +94,9 @@ namespace FlightControlWeb.Controllers
                     IsExternal = false
                 };
 
-                DataBaseCalls.AddAFlightPlanAndAFlight(_context, flightPlan, flight);
+                db.Add(flight);
+
+                await db.SaveChangesAsync();
             }
 
 

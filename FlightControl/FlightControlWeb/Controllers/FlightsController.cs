@@ -34,7 +34,7 @@ namespace FlightControlWeb.Controllers
         public ActionResult Get(DateTime relative_to, bool? sync_all)
         {
 
-            var flights = DataBaseCalls.GetFlights(_context, relative_to);
+            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter => filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= relative_to && relative_to <= filter.FlightPlan.EndDateFlight.ToLocalTime());
 
             var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
                                                                        Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
@@ -54,7 +54,7 @@ namespace FlightControlWeb.Controllers
 
             if (this.Request.QueryString.ToString().Contains("sync_all"))
             {
-                var servers = DataBaseCalls.GetServers(_context);
+                var servers = _context.Servers.ToList();
 
                 foreach (var server in servers)
                 {
@@ -94,7 +94,11 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            DataBaseCalls.RemoveFlight(_context, id);
+            Flight flight = _context.Flight.Include(item => item.FlightPlan).Where(item => item.FlightIdentifier == id).First();
+            FlightPlan flightPlan = flight.FlightPlan;
+            _context.FlightPlans.Remove(flightPlan);
+            _context.Flight.Remove(flight);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
