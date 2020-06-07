@@ -37,8 +37,14 @@ namespace FlightControlWeb.Controllers
             var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter => filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= relative_to && relative_to <= filter.FlightPlan.EndDateFlight.ToLocalTime());
 
             var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
-                                                                       Longitude=flight.FlightPlan.InitialLocation.Longitude,
-                                                                       Latitude=flight.FlightPlan.InitialLocation.Latitude,
+                                                                       Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                                                  relative_to,
+                                                                                                                  flight.FlightPlan.InitialLocation,
+                                                                                                                  flight.FlightPlan.Segments.ToArray()).Longitude,
+                                                                       Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                                                 relative_to,
+                                                                                                                 flight.FlightPlan.InitialLocation,
+                                                                                                                 flight.FlightPlan.Segments.ToArray()).Latitude,
                                                                        Passengers=flight.FlightPlan.Passengers,
                                                                        CompanyName=flight.FlightPlan.CompanyName,
                                                                        DateTime=flight.FlightPlan.InitialLocation.DateTime.ToString(),
