@@ -29,7 +29,7 @@ namespace FlightControlWeb.Controllers
 
 
         [HttpGet("{id?}")]
-        public ActionResult Get(string id)
+        public async Task<ActionResult<FlightPlanDTO>> Get(string id)
         {
             var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
             var output = from flightPlan in flightPlans
@@ -50,8 +50,8 @@ namespace FlightControlWeb.Controllers
                                  TimeSpanSeconds = location.TimeSpanSeconds
                              }).ToArray()
                              };
-            
-            return Ok(output.First());
+            var outputAsync = await output.FirstAsync<FlightPlanDTO>();
+            return outputAsync;
 
         }
 
@@ -59,7 +59,7 @@ namespace FlightControlWeb.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public CreatedResult Post(FlightPlanDTO flightPlanDTO)
+        public async Task<ActionResult> Post(FlightPlanDTO flightPlanDTO)
         {
             using (var db = new FlightPlanDBContext())
             {
@@ -96,7 +96,7 @@ namespace FlightControlWeb.Controllers
 
                 db.Add(flight);
 
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
 
 

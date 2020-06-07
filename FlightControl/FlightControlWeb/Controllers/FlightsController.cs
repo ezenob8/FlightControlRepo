@@ -92,13 +92,13 @@ namespace FlightControlWeb.Controllers
         }
         
         [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             Flight flight = _context.Flight.Include(item => item.FlightPlan).Where(item => item.FlightIdentifier == id).First();
             FlightPlan flightPlan = flight.FlightPlan;
             _context.FlightPlans.Remove(flightPlan);
             _context.Flight.Remove(flight);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
