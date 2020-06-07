@@ -190,6 +190,7 @@ export class AppComponent {
 
 
   public clean() {
+    this.selectedFlightPlan$.forEach(data => data.segments = null);
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     
   }

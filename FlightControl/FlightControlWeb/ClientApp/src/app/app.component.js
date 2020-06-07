@@ -147,6 +147,7 @@ var AppComponent = /** @class */ (function () {
         }
     };
     AppComponent.prototype.clean = function () {
+        this.selectedFlightPlan$.forEach(function (data) { return data.segments = null; });
         this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     };
     AppComponent = __decorate([

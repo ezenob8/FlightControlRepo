@@ -11,8 +11,8 @@
               <agm-marker *ngFor="let flight of internalFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick('',flight.flight_id)">
               </agm-marker>
               <agm-polyline *ngIf="selectedFlightPlan$ | async as selectedFlightPlan" [editable]="false">
-                <agm-polyline-point [latitude]="21.12"
-                                    [longitude]="23.244">
+                <agm-polyline-point [latitude]="selectedFlightPlan.initial_location.latitude"
+                                    [longitude]="selectedFlightPlan.initial_location.longitude">
                 </agm-polyline-point>
                 <agm-polyline-point *ngFor="let segment of selectedFlightPlan.segments" [latitude]="segment.latitude"
                                     [longitude]="segment.longitude">
