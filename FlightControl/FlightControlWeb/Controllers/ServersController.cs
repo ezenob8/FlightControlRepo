@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-
 namespace FlightControlWeb.Controllers
 {
     [ApiController]
@@ -25,30 +24,44 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult<ServerDTO>> Get()
         {
-            return base.Ok(DataBaseCalls.GetListOfServers(_context));
+            var servers = await _context.Servers.ToListAsync<Server>();
+            //return Ok(null);
+            return Ok(from server in servers
+                      select new ServerDTO
+                      {
+                          ServerId = server.ServerId,
+                          ServerURL = server.ServerURL
+                      });
         }
 
         [HttpPost]
-        public ActionResult Post(ServerDTO serverDTO)
+        public async Task<IActionResult> Post(ServerDTO serverDTO)
         {
-            Server server = new Server
+            using (var db = new FlightPlanDBContext())
             {
-                ServerId = serverDTO.ServerId,
-                ServerURL = serverDTO.ServerURL
-            };
-            DataBaseCalls.AddServer(_context, server);
+                Server server = new Server
+                {
+                    ServerId = serverDTO.ServerId,
+                    ServerURL = serverDTO.ServerURL
+                };
 
-            return Ok(server);
+                db.Add(server);
+                await db.SaveChangesAsync();
+            }
+
+            return Created("", null);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             Server server = _context.Servers.Where(item => item.ServerId == id).First();
-            DataBaseCalls.DeleteServer(_context, server);
-            return NoContent();
+            _context.Servers.Remove(server);
+            await _context.SaveChangesAsync();
+            return NoContent(); 
         }
+
     }
 }
