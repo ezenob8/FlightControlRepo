@@ -31,10 +31,10 @@ namespace FlightControlWeb
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins("http://localhost:9090", "http://localhost:21431");
-                                  });
+                                 builder =>
+                                 {
+                                     builder.WithOrigins("http://*").AllowAnyHeader();
+                                 });
             });
 
             services.AddEntityFrameworkSqlServer().AddDbContext<FlightPlanDBContext>();
