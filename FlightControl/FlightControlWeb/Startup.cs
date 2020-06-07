@@ -33,7 +33,7 @@ namespace FlightControlWeb
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:9090", "http://localhost:21431");
+                                      builder.WithOrigins("http://*").AllowAnyHeader();
                                   });
             });
 

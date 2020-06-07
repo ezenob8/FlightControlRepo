@@ -19,8 +19,8 @@ var FlightDetailsComponent = /** @class */ (function () {
     }
     FlightDetailsComponent.prototype.ngOnInit = function () {
         var _this = this;
-        if (this.eventEmitterService.subsVar == undefined) {
-            this.eventEmitterService.subsVar = this.eventEmitterService.
+        if (this.eventEmitterService.subsFlightPlan == undefined) {
+            this.eventEmitterService.subsFlightPlan = this.eventEmitterService.
                 invokeFlightPlanComponentFunction.subscribe(function (params) {
                 _this.loadDetails(params);
             });
@@ -46,6 +46,7 @@ var FlightDetailsComponent = /** @class */ (function () {
                 _this.selected_final_location = result.segments[result.segments.length - 1];
                 _this.selectedFlightPlan = result;
             }, function (error) { return console.error(error); });
+            this.eventEmitterService.invokeAppComponentFunction.emit(params);
         }
     };
     FlightDetailsComponent = __decorate([

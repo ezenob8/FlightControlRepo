@@ -23,11 +23,20 @@ export class AppComponent {
   public extendedFlights: ExtendedFlightDTO[]=[];
   public servers: ServerDTO[] = [];
   public showDrop: boolean;
-  public selectedFlightPlan$: Observable<FlightPlanDTO>;
+  //public selectedFlightPlan$: Observable<FlightPlanDTO>;
+  public selectedFlightPlan: FlightPlanDTO;
+  public selected_flight_id: string = '';
   public latitud: number;
-  public showLine: boolean =false;
+  public showLine: boolean = false;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string, private eventEmitterService: EventEmitterService) {
+    if (this.eventEmitterService.subsApp == undefined) {
+      this.eventEmitterService.subsApp = this.eventEmitterService.
+        invokeAppComponentFunction.subscribe((params: string[]) => {
+          this.showPoligone(params);
+        });
+    }
+
     this.mapsAPILoader.load().then(() => {
       this.bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(51.130739, -0.868052), // SW
@@ -164,26 +173,36 @@ export class AppComponent {
   }
 
   public flightPlanLoadDetailClick(serverURL: string, flightId: string) {
-    if (serverURL == '')
+    this.eventEmitterService.onClickInternalClean();
+    this.eventEmitterService.onClickExternalClean();
+    this.selected_flight_id = flightId;
+    if (serverURL == undefined)
         serverURL = this.baseUrl;
     this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
+  }
 
-    if (serverURL == 'clean') {
-      
+  public showPoligoneAndDetail(serverURL: string, flightId: string) {
+    this.showPoligone([serverURL, flightId]);
+    this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
+  }
+
+  public showPoligone(params: string[]) {
+    if (params[1] == 'clean') {
+
     } else {
-      this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
-
+      //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
+        this.http.get<FlightPlanDTO>(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(result => {
+          this.selectedFlightPlan = result;
+        }, error => console.error(error));
+        this.selected_flight_id = params[1];
     }
 
-    
   }
 
 
 
-
   public clean() {
-    //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(this.baseUrl + 'api/FlightPlan' + '/' + '');
-
+    this.selectedFlightPlan = null;
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     
   }

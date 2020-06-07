@@ -24,6 +24,7 @@ var AppComponent = /** @class */ (function () {
         this.externalFlights = [];
         this.extendedFlights = [];
         this.servers = [];
+        this.selected_flight_id = '';
         this.showLine = false;
         this.icon = {
             url: 'assets/images/plane-rojo.png',
@@ -41,6 +42,12 @@ var AppComponent = /** @class */ (function () {
         };
         //From here drag and drop
         this.files = [];
+        if (this.eventEmitterService.subsApp == undefined) {
+            this.eventEmitterService.subsApp = this.eventEmitterService.
+                invokeAppComponentFunction.subscribe(function (params) {
+                _this.showPoligone(params);
+            });
+        }
         this.mapsAPILoader.load().then(function () {
             _this.bounds = new google.maps.LatLngBounds(new google.maps.LatLng(51.130739, -0.868052), // SW
             new google.maps.LatLng(51.891257, 0.559417) // NE
@@ -130,17 +137,31 @@ var AppComponent = /** @class */ (function () {
         });
     };
     AppComponent.prototype.flightPlanLoadDetailClick = function (serverURL, flightId) {
-        if (serverURL == '')
+        this.eventEmitterService.onClickInternalClean();
+        this.eventEmitterService.onClickExternalClean();
+        this.selected_flight_id = flightId;
+        if (serverURL == undefined)
             serverURL = this.baseUrl;
         this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
-        if (serverURL == 'clean') {
+    };
+    AppComponent.prototype.showPoligoneAndDetail = function (serverURL, flightId) {
+        this.showPoligone([serverURL, flightId]);
+        this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
+    };
+    AppComponent.prototype.showPoligone = function (params) {
+        var _this = this;
+        if (params[1] == 'clean') {
         }
         else {
-            this.selectedFlightPlan$ = this.http.get(serverURL + 'api/FlightPlan' + '/' + flightId);
+            //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
+            this.http.get(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(function (result) {
+                _this.selectedFlightPlan = result;
+            }, function (error) { return console.error(error); });
+            this.selected_flight_id = params[1];
         }
     };
     AppComponent.prototype.clean = function () {
-        //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(this.baseUrl + 'api/FlightPlan' + '/' + '');
+        this.selectedFlightPlan = null;
         this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     };
     AppComponent = __decorate([

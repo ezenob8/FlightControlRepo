@@ -6,11 +6,11 @@
 
             
             <agm-map (mapReady)="mapReady($event)">
-              <agm-marker *ngFor="let flight of extendedFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
+              <agm-marker *ngFor="let flight of extendedFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''"  [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
               </agm-marker>
-              <agm-marker *ngFor="let flight of internalFlights" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick('',flight.flight_id)">
+              <agm-marker *ngFor="let flight of internalFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
               </agm-marker>
-              <agm-polyline *ngIf="selectedFlightPlan$ | async as selectedFlightPlan" [editable]="false">
+              <agm-polyline *ngIf="selectedFlightPlan" [editable]="false">
                 <agm-polyline-point [latitude]="selectedFlightPlan.initial_location.latitude"
                                     [longitude]="selectedFlightPlan.initial_location.longitude">
                 </agm-polyline-point>
