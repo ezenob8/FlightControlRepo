@@ -11,6 +11,7 @@ namespace FlightControlWeb.Algorithms
         {
             if(currentId.CompareTo("") == 0)
             {
+                // Base case
                 return "AAAA-0000";
             }
             else

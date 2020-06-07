@@ -10,15 +10,11 @@ namespace FlightControlWeb.Model
     public class FlightPlan : Entity
     {
         public int Passengers { get; set; }
-
         [JsonProperty("company_name")]
         public string CompanyName { get; set; }
-
         [JsonProperty("initial_location")]
         public virtual InitialLocation InitialLocation { get; set; }
-
         public ICollection<Location> Segments { get; set; }
-
         [JsonProperty("end_date_flight")]
         public virtual DateTime EndDateFlight
         {
@@ -30,7 +26,6 @@ namespace FlightControlWeb.Model
 
             }
         }
-
         public Flight Flight { get; set; }
     }
 }

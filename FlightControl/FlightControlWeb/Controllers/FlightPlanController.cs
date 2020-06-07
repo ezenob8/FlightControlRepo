@@ -18,7 +18,7 @@ namespace FlightControlWeb.Controllers
     public class FlightPlanController : ControllerBase
     {
         private readonly ILogger<FlightPlanController> _logger;
-        private readonly FlightPlanDBContext _context;
+        public FlightPlanDBContext _context;
 
         public FlightPlanController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
@@ -26,32 +26,12 @@ namespace FlightControlWeb.Controllers
             _context = context;
         }
 
-
         [HttpGet("{id?}")]
         public ObjectResult Get(string id)
         {
-            var flightPlans = _context.FlightPlans.Include(item => item.Flight).Include(item => item.InitialLocation).Include(item => item.Segments).Where(item => id == null || item.Flight.FlightIdentifier == id).Take(1);
-            var output = from flightPlan in flightPlans
-                         select new FlightPlanDTO
-                         {
-                             Passengers = flightPlan.Passengers,
-                             CompanyName = flightPlan.CompanyName,
-                             InitialLocation = new InitialLocationDTO
-                             {
-                                 Longitude = flightPlan.InitialLocation.Longitude,
-                                 Latitude = flightPlan.InitialLocation.Latitude,
-                                 DateTime = flightPlan.InitialLocation.DateTime.ToLocalTime().ToString("yyyy/MM/dd HH:mm:ss"),
-                             },
-                             Segments = (from location in flightPlan.Segments select new LocationDTO
-                             {
-                                 Longitude = location.Longitude,
-                                 Latitude = location.Latitude,
-                                 TimeSpanSeconds = location.TimeSpanSeconds
-                             }).ToArray()
-                             };
-            
-            return Ok(output.First());
+            IQueryable<FlightPlanDTO> output = DataBaseCalls.FindFlightPlanId(_context, id);
 
+            return Ok(output.First());
         }
 
         [HttpPost]
@@ -60,46 +40,54 @@ namespace FlightControlWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public CreatedResult Post(FlightPlanDTO flightPlanDTO)
         {
-            using (var db = new FlightPlanDBContext())
-            {
-                // Create FlightPlan Plan
-                FlightPlan flightPlan = new FlightPlan
-                {
+            FlightPlan flightPlan = CreateFlightPlan(flightPlanDTO);
 
-                    Passengers = flightPlanDTO.Passengers,
-                    CompanyName = flightPlanDTO.CompanyName,
-                    InitialLocation = new InitialLocation
-                    {
+            string lastId = !_context.FlightPlans.Include(item => item.Flight)
+                .OrderByDescending(item => item.Flight.FlightIdentifier).Any() ? "AAAA-0000"
+                : _context.FlightPlans.Include(item => item.Flight)
+                .OrderByDescending(item => item.Flight.FlightIdentifier)
+                .First().Flight.FlightIdentifier;
+            // Create a new flight
+            Flight flight = CreateFlight(flightPlan, lastId);
 
-                        Longitude = flightPlanDTO.InitialLocation.Longitude,
-                        Latitude = flightPlanDTO.InitialLocation.Latitude,
-                        DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
-                        //DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
-                    },
-                    Segments = (from segment in flightPlanDTO.Segments
-                               select new Location { Longitude = segment.Longitude,
-                                                     Latitude = segment.Latitude,
-                                                     TimeSpanSeconds = segment.TimeSpanSeconds
-                                                   }).ToList()
-                };
+            DataBaseCalls.AddAFlightPlanAndAFlight(_context, flightPlan, flight);
 
-                db.Add(flightPlan);
-                string lastId = !db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).Any() ? "AAAA-0000" : db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).First().Flight.FlightIdentifier;
-                Flight flight = new Flight
-                {
-                    FlightPlan = flightPlan,
-                    FlightPlanId = flightPlan.Id,
-                    FlightIdentifier = GenerateFlightId.GenerateFlightIdentifier(lastId),
-                    IsExternal = false
-                };
-
-                db.Add(flight);
-
-                db.SaveChanges();
-            }
             return Created("", flightPlanDTO);
         }
 
+        private Flight CreateFlight(FlightPlan flightPlan, string lastId)
+        {
+            return new Flight
+            {
+                FlightPlan = flightPlan,
+                FlightPlanId = flightPlan.Id,
+                FlightIdentifier = GenerateFlightId.GenerateFlightIdentifier(lastId),
+                IsExternal = false
+            };
+        }
+
+        private FlightPlan CreateFlightPlan(FlightPlanDTO flightPlanDTO)
+        {
+            // Create FlightPlan Plan
+            return new FlightPlan
+            {
+                Passengers = flightPlanDTO.Passengers,
+                CompanyName = flightPlanDTO.CompanyName,
+                InitialLocation = new InitialLocation
+                {
+                    Longitude = flightPlanDTO.InitialLocation.Longitude,
+                    Latitude = flightPlanDTO.InitialLocation.Latitude,
+                    DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
+                },
+                Segments = (from segment in flightPlanDTO.Segments
+                            select new Location
+                            {
+                                Longitude = segment.Longitude,
+                                Latitude = segment.Latitude,
+                                TimeSpanSeconds = segment.TimeSpanSeconds
+                            }).ToList()
+            };
+        }
     }
 
 }

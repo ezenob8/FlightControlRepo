@@ -18,7 +18,6 @@ namespace FlightControlWeb.Controllers
         private readonly ILogger<FlightPlanController> _logger;
         private readonly FlightPlanDBContext _context;
 
-
         public ServersController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
             _logger = logger;
@@ -28,53 +27,28 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get()
         {
-            
-            //return Ok(null);
-            return Ok(from server in _context.Servers
-                      select new ServerDTO
-                      {
-                          ServerId = server.ServerId,
-                          ServerURL = server.ServerURL
-                      });
+            return base.Ok(DataBaseCalls.GetListOfServers(_context));
         }
 
         [HttpPost]
         public ActionResult Post(ServerDTO serverDTO)
         {
-            using (var db = new FlightPlanDBContext())
+            Server server = new Server
             {
-                Server server = new Server
-                {
-                    ServerId = serverDTO.ServerId,
-                    ServerURL = serverDTO.ServerURL
-                };
+                ServerId = serverDTO.ServerId,
+                ServerURL = serverDTO.ServerURL
+            };
+            DataBaseCalls.AddServer(_context, server);
 
-                db.Add(server);
-                try { db.SaveChanges(); }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Message);
-                    // 424 is Failed Dependency
-                    return StatusCode(424);
-                }
-                ServerDTO ss = new ServerDTO
-                {
-                    ServerId = "1111",
-                    ServerURL = "eeee"
-                };
-                return Ok(ss);
-            }
-
-            return Created("", null);
+            return Ok(server);
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
             Server server = _context.Servers.Where(item => item.ServerId == id).First();
-            _context.Servers.Remove(server);
-            _context.SaveChanges();
-            return NoContent(); 
+            DataBaseCalls.DeleteServer(_context, server);
+            return NoContent();
         }
     }
 }
