@@ -9,6 +9,7 @@ using FlightControlWeb.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Moq;
+using Autofac.Extras.Moq;
 
 namespace XUnitTests
 {
@@ -19,23 +20,29 @@ namespace XUnitTests
         private readonly Mock<ILogger<FlightPlanController>> logMock = new Mock<ILogger<FlightPlanController>>();
         public UnitTest1()
         {
-            FlightPlanControllerTest =new FlightPlanController(logMock.Object,DbMock.Object);
+            FlightPlanControllerTest = new FlightPlanController(logMock.Object, DbMock.Object);
         }
 
         [Fact]
-        public void Test1()
+        public void GetValid()
         {
-            // A
-            //DbMock.
+            
+            using(var mock = AutoMock.GetLoose())
+            {
+                // Arrange
+                mock.Mock<FlightPlanController>()
+                    .Setup(x => x.Get("1"))
+                    .Returns(new ObjectResult(GetTestFlightPlan()));
+                var controllerInTest = mock.Create<FlightPlanController>();
 
-            DbMock.Object.Add(GetTestFlightPlan());
-            DbMock.Object.SaveChanges();
+                // Act
+                var expected = new ObjectResult(GetTestFlightPlan());
+                var actual = controllerInTest.Get("1");
 
-            // A
-            var result = FlightPlanControllerTest.Get("1");
+                Assert.True(actual != null);
+                Assert.Equal(expected.Value, actual.Value);
+            } 
 
-            // A
-            Assert.False(true);
         }
 
         public FlightPlanDTO GetTestFlightPlan()
@@ -51,8 +58,6 @@ namespace XUnitTests
             var mockSegmants = new List<LocationDTO>();
             var loc1 = new LocationDTO(); loc1.Latitude = 10; loc1.Longitude = 10; loc1.TimeSpanSeconds = 10;
             mockSegmants.Add(loc1);
-            flightPlan.EndDateFlight = new System.DateTime(2020, 8, 5, 4, 20, 13);
-            flightPlan.FinalLocation = loc1;
             flightPlan.Segments = mockSegmants.ToArray();
 
             return flightPlan;

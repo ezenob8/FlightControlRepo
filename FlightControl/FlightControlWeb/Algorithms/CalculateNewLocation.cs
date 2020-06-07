@@ -11,7 +11,7 @@ namespace FlightControlWeb.Algorithms
     {
         public static Coordinates Calculate(DateTime initialDate, DateTime actualDate, Coordinates initialLocation, Location[] segments)
         {
-            int seconds = Convert.ToInt32(actualDate.Subtract(initialDate).TotalSeconds);
+            int secondesPastFromStart = Convert.ToInt32(actualDate.Subtract(initialDate).TotalSeconds);
             int sumSeconds = 0, sumPrevSeconds = 0;
             Coordinates actualCoordSegment = initialLocation, actualCoordinates = null;
             for (int i = 0; i < segments.Length; i++)
@@ -19,12 +19,12 @@ namespace FlightControlWeb.Algorithms
                 var location = segments[i];
                 sumPrevSeconds = sumSeconds;
                 sumSeconds += location.TimeSpanSeconds;
-                if (seconds == sumSeconds)
+                if (secondesPastFromStart == sumSeconds)
                 {
                     actualCoordinates = location;
                     break;
                 }
-                else if (seconds < sumSeconds)
+                else if (secondesPastFromStart < sumSeconds)
                 {
                     var initCoord = new GeoCoordinate(actualCoordSegment.Latitude, actualCoordSegment.Longitude);
                     var finalCoord = new GeoCoordinate(location.Latitude, location.Longitude);
@@ -38,14 +38,14 @@ namespace FlightControlWeb.Algorithms
                     var distance = Math.Sqrt(Math.Pow((actualCoordSegment.Latitude - location.Latitude), 2) +
                                              Math.Pow((actualCoordSegment.Longitude - location.Longitude), 2));
 
-                    distance = (distance / location.TimeSpanSeconds) * (seconds - sumPrevSeconds);
+                    distance = (distance / location.TimeSpanSeconds) * (secondesPastFromStart - sumPrevSeconds);
 
-                    var angle = Math.Atan(difLat / difLong) * (Math.PI / 180);
+                    var angle = Math.Atan(difLat / difLong);
                     var deltaLat = 1.0;
                     var deltaLong = 1.0;
 
-                    if (finalCoord.Longitude - initCoord.Longitude > 0 &&
-                        finalCoord.Latitude - initCoord.Latitude < 0)
+                    if (finalCoord.Longitude > initCoord.Longitude  &&
+                        finalCoord.Latitude < initCoord.Latitude)
                     {
                         angle -= (Math.PI / 2);
                         deltaLat *= (-1.0);
