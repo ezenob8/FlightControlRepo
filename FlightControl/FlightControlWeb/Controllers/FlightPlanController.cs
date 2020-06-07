@@ -92,7 +92,7 @@ namespace FlightControlWeb.Controllers
                     IsExternal = false
                 };
 
-                DataBaseCalls.AddAFlightPlanAndAFlight(_context, flightPlan, flight);
+                await DataBaseCalls.AddAFlightPlanAndAFlight(_context, flightPlan, flight);
             }
 
 

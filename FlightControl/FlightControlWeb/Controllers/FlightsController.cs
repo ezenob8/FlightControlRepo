@@ -94,7 +94,7 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            DataBaseCalls.RemoveFlight(_context, id);
+            await DataBaseCalls.RemoveFlight(_context, id);
             return NoContent();
         }
 
