@@ -33,13 +33,9 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get(DateTime relative_to, bool? sync_all)
         {
-            
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).ToList().Where(item => item.FlightPlan.InitialLocation.DateTime.Day == relative_to.ToUniversalTime().Day &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Month == relative_to.ToUniversalTime().Month &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Year == relative_to.ToUniversalTime().Year &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Hour == relative_to.ToUniversalTime().Hour &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Minute == relative_to.ToUniversalTime().Minute 
-                                                    );
+
+            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter => filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= relative_to && relative_to <= filter.FlightPlan.EndDateFlight.ToLocalTime());
+
             var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
                                                                        Longitude=flight.FlightPlan.InitialLocation.Longitude,
                                                                        Latitude=flight.FlightPlan.InitialLocation.Latitude,
