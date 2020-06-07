@@ -42,7 +42,7 @@ export class AppComponent {
 
 
         //Internal Flights
-        http.get<FlightDTO[]>(baseUrl + 'api/flights/activeinternalflights').subscribe(resultInternal => {
+        http.get<FlightDTO[]>(baseUrl + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(resultInternal => {
           self.internalFlights = resultInternal;
         });
 

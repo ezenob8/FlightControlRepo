@@ -51,7 +51,7 @@ var AppComponent = /** @class */ (function () {
         var observer = rxjs_1.interval(3000)
             .subscribe(function (val) {
             //Internal Flights
-            http.get(baseUrl + 'api/flights/activeinternalflights').subscribe(function (resultInternal) {
+            http.get(baseUrl + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultInternal) {
                 self.internalFlights = resultInternal;
             });
             //External Flights

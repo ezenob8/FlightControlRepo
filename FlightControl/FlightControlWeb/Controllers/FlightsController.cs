@@ -91,29 +91,29 @@ namespace FlightControlWeb.Controllers
             return Ok(addedOutput);
         }
 
-        [HttpGet("ActiveInternalFlights")]
-        public ActionResult ActiveInternalFlights()
-        {
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter=> filter.FlightPlan.EndDateFlight.ToLocalTime() >= DateTime.Now && filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= DateTime.Now);
-            var output = from flight in flights
-                         select new FlightDTO
-                         {
-                             FlightIdentifier = flight.FlightIdentifier,
-                             Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
-                                                                        DateTime.Now,
-                                                                        flight.FlightPlan.InitialLocation,
-                                                                        flight.FlightPlan.Segments.ToArray()).Longitude,
-                             Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
-                                                                        DateTime.Now,
-                                                                        flight.FlightPlan.InitialLocation,
-                                                                        flight.FlightPlan.Segments.ToArray()).Latitude,
-                             Passengers = flight.FlightPlan.Passengers,
-                             CompanyName = flight.FlightPlan.CompanyName,
-                             DateTime = flight.FlightPlan.InitialLocation.DateTime.ToString(),
-                             IsExternal = flight.IsExternal
-                         };
-            return Ok(output);
-        }
+        //[HttpGet("ActiveInternalFlights")]
+        //public ActionResult ActiveInternalFlights()
+        //{
+        //    var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter=> filter.FlightPlan.EndDateFlight.ToLocalTime() >= DateTime.Now && filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= DateTime.Now);
+        //    var output = from flight in flights
+        //                 select new FlightDTO
+        //                 {
+        //                     FlightIdentifier = flight.FlightIdentifier,
+        //                     Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+        //                                                                DateTime.Now,
+        //                                                                flight.FlightPlan.InitialLocation,
+        //                                                                flight.FlightPlan.Segments.ToArray()).Longitude,
+        //                     Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+        //                                                                DateTime.Now,
+        //                                                                flight.FlightPlan.InitialLocation,
+        //                                                                flight.FlightPlan.Segments.ToArray()).Latitude,
+        //                     Passengers = flight.FlightPlan.Passengers,
+        //                     CompanyName = flight.FlightPlan.CompanyName,
+        //                     DateTime = flight.FlightPlan.InitialLocation.DateTime.ToString(),
+        //                     IsExternal = flight.IsExternal
+        //                 };
+        //    return Ok(output);
+        //}
 
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
