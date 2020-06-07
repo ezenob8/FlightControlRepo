@@ -64,6 +64,8 @@ namespace FlightControlWeb.Controllers
                 };
                 return Ok(ss);
             }
+
+            return Created("", null);
         }
 
         [HttpDelete("{id}")]
@@ -72,8 +74,7 @@ namespace FlightControlWeb.Controllers
             Server server = _context.Servers.Where(item => item.ServerId == id).First();
             _context.Servers.Remove(server);
             _context.SaveChanges();
-            return Ok(null);
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
+            return NoContent(); 
         }
     }
 }

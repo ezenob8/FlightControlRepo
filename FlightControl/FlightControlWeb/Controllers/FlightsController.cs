@@ -33,16 +33,18 @@ namespace FlightControlWeb.Controllers
         [HttpGet]
         public ActionResult Get(DateTime relative_to, bool? sync_all)
         {
-            
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).ToList().Where(item => item.FlightPlan.InitialLocation.DateTime.Day == relative_to.ToUniversalTime().Day &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Month == relative_to.ToUniversalTime().Month &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Year == relative_to.ToUniversalTime().Year &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Hour == relative_to.ToUniversalTime().Hour &&
-                                                    item.FlightPlan.InitialLocation.DateTime.Minute == relative_to.ToUniversalTime().Minute 
-                                                    );
+
+            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter => filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= relative_to && relative_to <= filter.FlightPlan.EndDateFlight.ToLocalTime());
+
             var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
-                                                                       Longitude=flight.FlightPlan.InitialLocation.Longitude,
-                                                                       Latitude=flight.FlightPlan.InitialLocation.Latitude,
+                                                                       Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                                                  relative_to,
+                                                                                                                  flight.FlightPlan.InitialLocation,
+                                                                                                                  flight.FlightPlan.Segments.ToArray()).Longitude,
+                                                                       Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                                                 relative_to,
+                                                                                                                 flight.FlightPlan.InitialLocation,
+                                                                                                                 flight.FlightPlan.Segments.ToArray()).Latitude,
                                                                        Passengers=flight.FlightPlan.Passengers,
                                                                        CompanyName=flight.FlightPlan.CompanyName,
                                                                        DateTime=flight.FlightPlan.InitialLocation.DateTime.ToString(),
@@ -88,31 +90,7 @@ namespace FlightControlWeb.Controllers
 
             return Ok(addedOutput);
         }
-
-        [HttpGet("ActiveInternalFlights")]
-        public ActionResult ActiveInternalFlights()
-        {
-            var flights = _context.Flight.Include(item => item.FlightPlan).Include(item => item.FlightPlan.InitialLocation).Include(item => item.FlightPlan.Segments).ToList().Where(filter=> filter.FlightPlan.EndDateFlight.ToLocalTime() >= DateTime.Now && filter.FlightPlan.InitialLocation.DateTime.ToLocalTime() <= DateTime.Now);
-            var output = from flight in flights
-                         select new FlightDTO
-                         {
-                             FlightIdentifier = flight.FlightIdentifier,
-                             Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
-                                                                        DateTime.Now,
-                                                                        flight.FlightPlan.InitialLocation,
-                                                                        flight.FlightPlan.Segments.ToArray()).Longitude,
-                             Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
-                                                                        DateTime.Now,
-                                                                        flight.FlightPlan.InitialLocation,
-                                                                        flight.FlightPlan.Segments.ToArray()).Latitude,
-                             Passengers = flight.FlightPlan.Passengers,
-                             CompanyName = flight.FlightPlan.CompanyName,
-                             DateTime = flight.FlightPlan.InitialLocation.DateTime.ToString(),
-                             IsExternal = flight.IsExternal
-                         };
-            return Ok(output);
-        }
-
+        
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
@@ -121,7 +99,7 @@ namespace FlightControlWeb.Controllers
             _context.FlightPlans.Remove(flightPlan);
             _context.Flight.Remove(flight);
             _context.SaveChanges();
-            return Ok(null);
+            return NoContent();
         }
 
     }

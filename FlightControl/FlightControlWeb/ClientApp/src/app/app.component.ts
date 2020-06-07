@@ -23,8 +23,9 @@ export class AppComponent {
   public extendedFlights: ExtendedFlightDTO[]=[];
   public servers: ServerDTO[] = [];
   public showDrop: boolean;
-  public selectedFlightPlan: FlightPlanDTO;
-  public showLine: boolean;
+  public selectedFlightPlan$: Observable<FlightPlanDTO>;
+  public latitud: number;
+  public showLine: boolean =false;
 
   constructor(private http: HttpClient, private mapsAPILoader: MapsAPILoader, @Inject('BASE_URL') private baseUrl: string, private eventEmitterService: EventEmitterService) {
     this.mapsAPILoader.load().then(() => {
@@ -41,7 +42,7 @@ export class AppComponent {
 
 
         //Internal Flights
-        http.get<FlightDTO[]>(baseUrl + 'api/flights/activeinternalflights').subscribe(resultInternal => {
+        http.get<FlightDTO[]>(baseUrl + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(resultInternal => {
           self.internalFlights = resultInternal;
         });
 
@@ -49,9 +50,7 @@ export class AppComponent {
         http.get<ServerDTO[]>(baseUrl + 'api/servers').subscribe(resultServer => {
           self.servers = resultServer;
           self.servers.forEach(server => {
-            //TODO: agregar + 'api/flights/relative_to=' + new Date().toISOString()
-            //console.log(new Date().toISOString());
-            http.get<FlightDTO[]>(self.servers[0].serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
+            http.get<FlightDTO[]>(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];;
               self.externalFlights = resultExternal;
               self.externalFlights.forEach(item => {
@@ -136,7 +135,6 @@ export class AppComponent {
 
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
 
       }
     }
@@ -158,7 +156,6 @@ export class AppComponent {
     const headers = new HttpHeaders({
       'security-token': 'mytoken'
     });
-    console.log(this.baseUrl);
     this.http.post<FlightDTO>(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
       .subscribe(data => {
 
@@ -166,29 +163,27 @@ export class AppComponent {
 
   }
 
-  public flightPlanLoadDetailClick(serverId: string, flightId: string) {
-    
-    if(serverId = '')
-      this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
-    else
-      this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
+  public flightPlanLoadDetailClick(serverURL: string, flightId: string) {
+    if (serverURL == '')
+        serverURL = this.baseUrl;
+    this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
 
-    if (serverId == 'clean') {
-      this.selectedFlightPlan = null;
+    if (serverURL == 'clean') {
+      
     } else {
-      this.http.get<FlightPlanDTO>(serverId + 'api/FlightPlan' + '/' + flightId).subscribe(result => {
-        let sum: number = 0;
-        result.segments.forEach((segment, index) =>
-          sum += segment.timespan_seconds
-        );
-        this.selectedFlightPlan = result;
-      }, error => console.error(error));
+      this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
+
     }
 
     
   }
 
+
+
+
   public clean() {
+    //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(this.baseUrl + 'api/FlightPlan' + '/' + '');
+
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     
   }

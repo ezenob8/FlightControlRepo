@@ -24,6 +24,7 @@ var AppComponent = /** @class */ (function () {
         this.externalFlights = [];
         this.extendedFlights = [];
         this.servers = [];
+        this.showLine = false;
         this.icon = {
             url: 'assets/images/plane-rojo.png',
             scaledSize: {
@@ -50,16 +51,14 @@ var AppComponent = /** @class */ (function () {
         var observer = rxjs_1.interval(3000)
             .subscribe(function (val) {
             //Internal Flights
-            http.get(baseUrl + 'api/flights/activeinternalflights').subscribe(function (resultInternal) {
+            http.get(baseUrl + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultInternal) {
                 self.internalFlights = resultInternal;
             });
             //External Flights
             http.get(baseUrl + 'api/servers').subscribe(function (resultServer) {
                 self.servers = resultServer;
                 self.servers.forEach(function (server) {
-                    //TODO: agregar + 'api/flights/relative_to=' + new Date().toISOString()
-                    //console.log(new Date().toISOString());
-                    http.get(self.servers[0].serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
+                    http.get(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
                         var ext = [];
                         ;
                         self.externalFlights = resultExternal;
@@ -108,7 +107,6 @@ var AppComponent = /** @class */ (function () {
             else {
                 // It was a directory (empty directories are added, otherwise only files)
                 var fileEntry = droppedFile.fileEntry;
-                console.log(droppedFile.relativePath, fileEntry);
             }
         };
         for (var _i = 0, files_1 = files; _i < files_1.length; _i++) {
@@ -127,31 +125,22 @@ var AppComponent = /** @class */ (function () {
         var headers = new http_1.HttpHeaders({
             'security-token': 'mytoken'
         });
-        console.log(this.baseUrl);
         this.http.post(this.baseUrl + 'api/FlightPlan', JSON.parse(jsondata), { headers: headers, responseType: 'json' })
             .subscribe(function (data) {
         });
     };
-    AppComponent.prototype.flightPlanLoadDetailClick = function (serverId, flightId) {
-        var _this = this;
-        if (serverId = '')
-            this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, flightId]);
-        else
-            this.eventEmitterService.onClickLoadFlightDetails([serverId, flightId]);
-        if (serverId == 'clean') {
-            this.selectedFlightPlan = null;
+    AppComponent.prototype.flightPlanLoadDetailClick = function (serverURL, flightId) {
+        if (serverURL == '')
+            serverURL = this.baseUrl;
+        this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
+        if (serverURL == 'clean') {
         }
         else {
-            this.http.get(serverId + 'api/FlightPlan' + '/' + flightId).subscribe(function (result) {
-                var sum = 0;
-                result.segments.forEach(function (segment, index) {
-                    return sum += segment.timespan_seconds;
-                });
-                _this.selectedFlightPlan = result;
-            }, function (error) { return console.error(error); });
+            this.selectedFlightPlan$ = this.http.get(serverURL + 'api/FlightPlan' + '/' + flightId);
         }
     };
     AppComponent.prototype.clean = function () {
+        //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(this.baseUrl + 'api/FlightPlan' + '/' + '');
         this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     };
     AppComponent = __decorate([
