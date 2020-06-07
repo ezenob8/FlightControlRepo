@@ -46,9 +46,15 @@ namespace FlightControlWeb.Controllers
 
 
             var output = from flight in flights select new FlightDTO { FlightIdentifier=flight.FlightIdentifier,
-                                                                       Longitude=flight.FlightPlan.InitialLocation.Longitude,
-                                                                       Latitude=flight.FlightPlan.InitialLocation.Latitude,
-                                                                       Passengers=flight.FlightPlan.Passengers,
+                                                                       Longitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                                                  relative_to,
+                                                                                                                  flight.FlightPlan.InitialLocation,
+                                                                                                                  flight.FlightPlan.Segments.ToArray()).Longitude,
+                                                                       Latitude = CalculateNewLocation.Calculate(flight.FlightPlan.InitialLocation.DateTime.ToLocalTime(),
+                                                                                                                 relative_to,
+                                                                                                                 flight.FlightPlan.InitialLocation,
+                                                                                                                 flight.FlightPlan.Segments.ToArray()).Latitude,
+                                                                       Passengers =flight.FlightPlan.Passengers,
                                                                        CompanyName=flight.FlightPlan.CompanyName,
                                                                        DateTime=flight.FlightPlan.InitialLocation.DateTime.ToString(),
                                                                        IsExternal =flight.IsExternal};
