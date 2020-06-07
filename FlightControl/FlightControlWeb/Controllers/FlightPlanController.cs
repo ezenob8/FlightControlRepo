@@ -16,7 +16,6 @@ namespace FlightControlWeb.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    [EnableCors("_myAllowSpecificOrigins")]
     public class FlightPlanController : ControllerBase
     {
         private readonly ILogger<FlightPlanController> _logger;
