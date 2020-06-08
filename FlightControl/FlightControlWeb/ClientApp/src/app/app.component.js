@@ -156,12 +156,14 @@ var AppComponent = /** @class */ (function () {
             //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
             this.http.get(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(function (result) {
                 _this.selectedFlightPlan = result;
+                _this.selected_flight_id = params[1];
             }, function (error) { return console.error(error); });
             this.selected_flight_id = params[1];
         }
     };
     AppComponent.prototype.clean = function () {
         this.selectedFlightPlan = null;
+        this.selected_flight_id = '';
         this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
     };
     AppComponent = __decorate([

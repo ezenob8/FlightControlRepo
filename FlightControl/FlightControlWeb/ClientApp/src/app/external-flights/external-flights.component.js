@@ -34,6 +34,9 @@ var ExternalFlightsComponent = /** @class */ (function () {
     __decorate([
         core_1.Input()
     ], ExternalFlightsComponent.prototype, "extendedFlights", void 0);
+    __decorate([
+        core_1.Input()
+    ], ExternalFlightsComponent.prototype, "selected_flight_id", void 0);
     ExternalFlightsComponent = __decorate([
         core_1.Component({
             selector: 'external-flights',

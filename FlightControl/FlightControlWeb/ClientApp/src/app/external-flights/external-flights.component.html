@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr [ngClass]="flight.flight_id == selected_flight_id ? 'backGreen' : ''" *ngFor="let flight of extendedFlights" (click)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
+      <tr [ngClass]="flight.flight_id == selected_flight_id ? 'backYellow' : ''" *ngFor="let flight of extendedFlights" (click)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
         <td>{{ flight.flight_id }}</td>
         <td colspan="2">{{ flight.company_name }}</td>
       </tr>
