@@ -12,7 +12,7 @@ export class ExternalFlightsComponent  {
 
 
   @Input() extendedFlights: FlightDTO[] = [];
-  public selected_flight_id: string;
+  @Input() selected_flight_id: string;
 
   constructor(@Inject('BASE_URL') baseUrl: string,http: HttpClient, private eventEmitterService: EventEmitterService) {
 

@@ -6,9 +6,9 @@
 
             
             <agm-map (mapReady)="mapReady($event)">
-              <agm-marker *ngFor="let flight of extendedFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''"  [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
+              <agm-marker *ngFor="let flight of extendedFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''"  [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id);">
               </agm-marker>
-              <agm-marker *ngFor="let flight of internalFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id)">
+              <agm-marker *ngFor="let flight of internalFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id);">
               </agm-marker>
               <agm-polyline *ngIf="selectedFlightPlan" [editable]="false">
                 <agm-polyline-point [latitude]="selectedFlightPlan.initial_location.latitude"
@@ -34,22 +34,18 @@
       </div>
       <div class= "col-lg-3 rounded-lg">
         <div style="height:52%;">
-          <my-flights [flights]="internalFlights"></my-flights>
-          
+          <my-flights [selected_flight_id]="selected_flight_id" [flights]="internalFlights"></my-flights>
           <toggle-button (changed)="showDrop=$event">
           </toggle-button>
-          
           <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
                          (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)" *ngIf="showDrop">
             <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
               Drop file here to upload a Flight Plan.
             </ng-template>
           </ngx-file-drop>
-
         </div>
         <div class="m-1">
-          <external-flights [extendedFlights]="extendedFlights"></external-flights>
-          
+          <external-flights [selected_flight_id]="selected_flight_id" [extendedFlights]="extendedFlights"></external-flights>
         </div>
       </div>
     </div>

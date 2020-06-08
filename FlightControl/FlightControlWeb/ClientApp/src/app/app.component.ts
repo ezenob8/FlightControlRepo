@@ -193,6 +193,7 @@ export class AppComponent {
       //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
         this.http.get<FlightPlanDTO>(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(result => {
           this.selectedFlightPlan = result;
+          this.selected_flight_id = params[1];
         }, error => console.error(error));
         this.selected_flight_id = params[1];
     }
@@ -203,8 +204,8 @@ export class AppComponent {
 
   public clean() {
     this.selectedFlightPlan = null;
+    this.selected_flight_id = '';
     this.eventEmitterService.onClickLoadFlightDetails(['', 'clean']);
-    
   }
 
   
@@ -231,6 +232,7 @@ interface ServerDTO {
 }
 
 interface FlightPlanDTO {
+  flight_id: string;
   passengers: number;
   company_name: string;
   initial_location: InitialLocationDTO;

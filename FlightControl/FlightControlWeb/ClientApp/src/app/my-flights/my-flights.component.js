@@ -30,7 +30,6 @@ var MyFlightsComponent = /** @class */ (function () {
         this.eventEmitterService.onClickExternalClean();
     };
     MyFlightsComponent.prototype.delete = function (flightId) {
-        console.log('aaa' + flightId);
         this.http.delete(this.baseUrl + 'api/flights/' + flightId).subscribe(function (result) {
         }, function (error) { return console.error(error); });
         this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, 'clean']);
@@ -41,6 +40,9 @@ var MyFlightsComponent = /** @class */ (function () {
     __decorate([
         core_1.Input()
     ], MyFlightsComponent.prototype, "flights", void 0);
+    __decorate([
+        core_1.Input()
+    ], MyFlightsComponent.prototype, "selected_flight_id", void 0);
     MyFlightsComponent = __decorate([
         core_1.Component({
             selector: 'my-flights',

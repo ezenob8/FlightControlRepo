@@ -13,7 +13,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr  [ngClass]="flight.flight_id == selected_flight_id ? 'backGreen' : ''" role="alert" *ngFor="let flight of flights" (click)="flightPlanLoadDetailClick('',flight.flight_id)">
+      <tr  [ngClass]="flight.flight_id == selected_flight_id ? 'backYellow' : ''" role="alert" *ngFor="let flight of flights" (click)="flightPlanLoadDetailClick('',flight.flight_id)">
         <td>{{ flight.flight_id }}</td>
         <td>{{ flight.company_name }}</td>
         <td class="text-center p-1"><button (click)="delete(flight.flight_id)">X</button></td>

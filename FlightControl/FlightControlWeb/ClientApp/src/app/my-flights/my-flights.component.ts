@@ -10,7 +10,7 @@ import { EventEmitterService } from '../event-emitter.service';
 
 export class MyFlightsComponent {
   @Input() flights: FlightDTO[];
-  public selected_flight_id: string;
+  @Input() selected_flight_id: string;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string,private eventEmitterService: EventEmitterService) {
     if (this.eventEmitterService.subsInternal == undefined) {
@@ -19,7 +19,6 @@ export class MyFlightsComponent {
           this.clean();
         });
     }
-
   }
   public flightPlanLoadDetailClick(serverId: string, flightId: string)
   {
@@ -28,7 +27,6 @@ export class MyFlightsComponent {
     this.eventEmitterService.onClickExternalClean();
   }
   public delete(flightId: string) {
-    console.log('aaa' + flightId);
     this.http.delete(this.baseUrl + 'api/flights/' + flightId ).subscribe(result => {
     }, error => console.error(error));
     this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, 'clean']);
