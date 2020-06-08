@@ -68,14 +68,15 @@ namespace FlightControlWeb
             }
 
             app.UseRouting();
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors(options =>
+            options.AllowAnyOrigin());
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-            });
+            }).UseCors(option=>option.AllowAnyOrigin().AllowAnyMethod());
 
             app.UseSpa(spa =>
             {
