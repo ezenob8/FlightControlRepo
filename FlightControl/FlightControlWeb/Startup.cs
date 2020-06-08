@@ -76,7 +76,7 @@ namespace FlightControlWeb
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-            }).UseCors(option=>option.AllowAnyOrigin());
+            }).UseCors(option=>option.AllowAnyOrigin().AllowAnyMethod());
 
             app.UseSpa(spa =>
             {
