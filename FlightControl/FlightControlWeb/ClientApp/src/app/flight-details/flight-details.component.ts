@@ -21,8 +21,8 @@ export class FlightDetailsComponent implements OnInit {
     this.http = http;
   }
     ngOnInit(): void {
-      if (this.eventEmitterService.subsVar == undefined) {
-        this.eventEmitterService.subsVar = this.eventEmitterService.
+      if (this.eventEmitterService.subsFlightPlan == undefined) {
+        this.eventEmitterService.subsFlightPlan = this.eventEmitterService.
           invokeFlightPlanComponentFunction.subscribe((params: string[]) => {
             this.loadDetails(params);
           });
@@ -49,6 +49,7 @@ export class FlightDetailsComponent implements OnInit {
         this.selected_final_location = result.segments[result.segments.length - 1];
         this.selectedFlightPlan = result;
       }, error => console.error(error));
+      this.eventEmitterService.invokeAppComponentFunction.emit(params);
     }
     
   }

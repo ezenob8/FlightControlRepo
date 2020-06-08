@@ -16,7 +16,7 @@ namespace FlightControlWeb
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        readonly string MyAllowSpecificOrigins = "AllowOrigin";
 
         public Startup(IConfiguration configuration)
         {
@@ -33,7 +33,7 @@ namespace FlightControlWeb
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                  builder =>
                                  {
-                                     builder.WithOrigins("http://*").AllowAnyHeader();
+                                     builder.AllowAnyOrigin();
                                  });
             });
 

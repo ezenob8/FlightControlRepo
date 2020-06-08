@@ -12,17 +12,27 @@ export class ExternalFlightsComponent  {
 
 
   @Input() extendedFlights: FlightDTO[] = [];
+  @Input() selected_flight_id: string;
 
   constructor(@Inject('BASE_URL') baseUrl: string,http: HttpClient, private eventEmitterService: EventEmitterService) {
 
-   
+    if (this.eventEmitterService.subsExternal == undefined) {
+      this.eventEmitterService.subsExternal = this.eventEmitterService.
+        invokeExternalFlightComponentFunction.subscribe((params: string[]) => {
+          this.clean();
+        });
+    }
 
   }
 
-  flightPlanLoadDetailClick(serverURL:string, flightId:string) {
+  flightPlanLoadDetailClick(serverURL: string, flightId: string) {
+    this.selected_flight_id = flightId;
     this.eventEmitterService.onClickLoadFlightDetails([serverURL, flightId]);
+    this.eventEmitterService.onClickInternalClean();
   }
-
+  public clean() {
+    this.selected_flight_id = '';
+  }
 }
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlightControlWeb.DTO;
 using FlightControlWeb.Model;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ namespace FlightControlWeb.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [EnableCors("AllowOrigin")]
     public class ServersController : ControllerBase
     {
         private readonly ILogger<FlightPlanController> _logger;
@@ -24,11 +26,11 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get()
+        public async Task<ActionResult<ServerDTO>> Get()
         {
-            
+            var servers = await _context.Servers.ToListAsync<Server>();
             //return Ok(null);
-            return Ok(from server in _context.Servers
+            return Ok(from server in servers
                       select new ServerDTO
                       {
                           ServerId = server.ServerId,
@@ -37,7 +39,7 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpPost]
-        public ActionResult Post(ServerDTO serverDTO)
+        public async Task<IActionResult> Post(ServerDTO serverDTO)
         {
             using (var db = new FlightPlanDBContext())
             {
@@ -48,20 +50,19 @@ namespace FlightControlWeb.Controllers
                 };
 
                 db.Add(server);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
-            return Ok(null);
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
+
+            return Created("", null);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             Server server = _context.Servers.Where(item => item.ServerId == id).First();
             _context.Servers.Remove(server);
-            _context.SaveChanges();
-            return Ok(null);
-            //return Ok(_context.FlightPlans.Include(flight => flight.InitialLocation));
+            await _context.SaveChangesAsync();
+            return NoContent(); 
         }
 
     }

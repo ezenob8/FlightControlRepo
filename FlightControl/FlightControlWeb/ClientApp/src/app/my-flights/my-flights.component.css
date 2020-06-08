@@ -7,3 +7,7 @@
 .table-wrapper-scroll-y {
   display: block;
 }
+.backYellow {
+  background-color: yellow !important;
+  color: black !important;
+}
