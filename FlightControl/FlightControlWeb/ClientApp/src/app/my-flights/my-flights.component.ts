@@ -27,7 +27,7 @@ export class MyFlightsComponent {
     this.eventEmitterService.onClickExternalClean();
   }
   public delete(flightId: string) {
-    this.http.delete(this.baseUrl + 'api/flights/' + flightId ).subscribe(result => {
+    this.http.delete(this.baseUrl + 'api/Flights/' + flightId ).subscribe(result => {
     }, error => console.error(error));
     this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, 'clean']);
     

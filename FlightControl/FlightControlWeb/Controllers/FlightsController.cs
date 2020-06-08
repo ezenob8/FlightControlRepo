@@ -93,7 +93,7 @@ namespace FlightControlWeb.Controllers
         }
         
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public ActionResult Delete(string id)
         {
             
             try
@@ -102,7 +102,7 @@ namespace FlightControlWeb.Controllers
                 FlightPlan flightPlan = flight.FlightPlan;
                 _context.FlightPlans.Remove(flightPlan);
                 _context.Flight.Remove(flight);
-                await _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return NoContent();
             }
             catch (ArgumentNullException)
