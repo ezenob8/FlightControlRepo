@@ -33,7 +33,7 @@ namespace FlightControlWeb
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                  builder =>
                                  {
-                                     builder.AllowAnyOrigin();
+                                     builder.AllowAnyOrigin().AllowAnyMethod();
                                  });
             });
 
@@ -69,7 +69,7 @@ namespace FlightControlWeb
 
             app.UseRouting();
             app.UseCors(options =>
-            options.AllowAnyOrigin());
+            options.AllowAnyOrigin().AllowAnyMethod());
 
             app.UseEndpoints(endpoints =>
             {

@@ -14,7 +14,7 @@ namespace FlightControlWeb.Model
         public DbSet<Server> Servers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlServer("Data Source=(local);Initial Catalog=FlightPlanModelDB;user=sa;password=clave123;multipleactiveresultsets=True;");
+            => options.UseSqlServer("Data Source=(local);Initial Catalog=ServerExternoFlightPlanModelDB;user=sa;password=clave123;multipleactiveresultsets=True;");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

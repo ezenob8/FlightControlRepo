@@ -19,7 +19,6 @@ namespace FlightControlWeb.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
-    [EnableCors("AllowOrigin")]
     public class FlightsController : ControllerBase
     {
         private readonly ILogger<FlightPlanController> _logger;
@@ -96,12 +95,20 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            Flight flight = _context.Flight.Include(item => item.FlightPlan).Where(item => item.FlightIdentifier == id).First();
-            FlightPlan flightPlan = flight.FlightPlan;
-            _context.FlightPlans.Remove(flightPlan);
-            _context.Flight.Remove(flight);
-            await _context.SaveChangesAsync();
-            return NoContent();
+            
+            try
+            {
+                Flight flight = _context.Flight.Include(item => item.FlightPlan).Where(item => item.FlightIdentifier == id).First();
+                FlightPlan flightPlan = flight.FlightPlan;
+                _context.FlightPlans.Remove(flightPlan);
+                _context.Flight.Remove(flight);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            catch (ArgumentNullException)
+            {
+                return NotFound(id);
+            }
         }
 
     }
