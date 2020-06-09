@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Model;
+using System.Linq;
 
 namespace FlightControlWeb
 {
@@ -28,12 +29,20 @@ namespace FlightControlWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            FlightPlanDBContext flightPlanDBContext = new FlightPlanDBContext();
+
+            var servers = flightPlanDBContext.Servers;
+
+            var array = from server in servers
+                        select server.ServerURL.Substring(0, server.ServerURL.Length - 1);
+
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                  builder =>
                                  {
-                                     builder.WithOrigins("http://localhost:9090", "http://localhost:21431");
+                                     builder.WithOrigins(array.ToArray());
                                  });
             });
 

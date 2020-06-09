@@ -60,7 +60,7 @@ namespace FlightsTests
             var result = stubFlightPlanController.Get("6");
 
 
-            var ha = result as OkObjectResult;
+            //var ha = result as OkObjectResult;
             var da = ha.Value as FlightPlanDTO;
 
             // Assert
