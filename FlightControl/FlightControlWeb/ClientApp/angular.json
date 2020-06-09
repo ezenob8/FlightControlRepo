@@ -52,8 +52,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "FlightControlWeb:build",
-            "proxyConfig": "src/proxy.conf.json"
+            "browserTarget": "FlightControlWeb:build"
           },
           "configurations": {
             "production": {
