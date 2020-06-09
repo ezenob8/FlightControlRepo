@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using FlightControlWeb.Algorithms;
+using FlightControlWeb.CORSManager;
 using FlightControlWeb.DTO;
 using FlightControlWeb.Model;
 using Microsoft.AspNetCore.Cors;
@@ -16,6 +17,8 @@ namespace FlightControlWeb.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [EnableCors("AllowOrigin")]
+    [AllowCors("FlightPlan")]
     public class FlightPlanController : ControllerBase
     {
         private readonly ILogger<FlightPlanController> _logger;

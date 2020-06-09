@@ -1,6 +1,8 @@
 ﻿using FlightControlWeb.Algorithms;
+using FlightControlWeb.CORSManager;
 using FlightControlWeb.DTO;
 using FlightControlWeb.Model;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,8 @@ namespace FlightControlWeb.Controllers
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [EnableCors("AllowOrigin")]
+    [AllowCors("Flights")]
     public class FlightsController : ControllerBase
     {
         private readonly ILogger<FlightPlanController> _logger;

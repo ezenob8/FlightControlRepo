@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Model;
+using System.Linq;
 
 namespace FlightControlWeb
 {
@@ -29,25 +30,28 @@ namespace FlightControlWeb
         public void ConfigureServices(IServiceCollection services)
         {
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //                     builder =>
-            //                     {
-            //                         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            //                     });
-            //});
-
-            var allowedOrigins = Configuration["AppSettings:AllowedOrigins"];
-            var origins = allowedOrigins.Split(";");
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                  builder =>
                                  {
-                                     builder.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
+                                     builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                                  });
             });
+
+
+            //FlightPlanDBContext flightPlanDBContext = new FlightPlanDBContext();
+
+            //var arrayOrigins = (from server in flightPlanDBContext.Servers.ToList()
+            //                   select server.ServerURL.Substring(0, server.ServerURL.Length - 1)).ToArray();
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: MyAllowSpecificOrigins,
+            //                     builder =>
+            //                     {
+            //                         builder.WithOrigins(arrayOrigins).AllowAnyHeader().AllowAnyMethod();
+            //                     });
+            //});
 
 
             services.AddEntityFrameworkSqlServer().AddDbContext<FlightPlanDBContext>();
@@ -57,17 +61,19 @@ namespace FlightControlWeb
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-            //services.AddCors();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            var allowedOrigins = Configuration["AppSettings:AllowedOrigins"];
-            var origins = allowedOrigins.Split(";");
+            //FlightPlanDBContext flightPlanDBContext = new FlightPlanDBContext();
+
+            //var arrayOrigins = (from server in flightPlanDBContext.Servers.ToList()
+            //                    select server.ServerURL.Substring(0, server.ServerURL.Length - 1)).ToArray();
             app.UseCors(options =>
-                          options.WithOrigins(origins)
+                          options.AllowAnyOrigin()
                             .AllowAnyMethod()
                             .AllowAnyHeader());
             if (env.IsDevelopment())
@@ -99,10 +105,7 @@ namespace FlightControlWeb
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-            }).UseCors(options =>
-                          options.WithOrigins(origins)
-                            .AllowAnyMethod()
-                            .AllowAnyHeader());
+            }).UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseSpa(spa =>
             {
