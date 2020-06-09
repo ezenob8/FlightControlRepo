@@ -11,13 +11,12 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Model;
-using System.Linq;
 
 namespace FlightControlWeb
 {
     public class Startup
     {
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+        readonly string MyAllowSpecificOrigins = "AllowOrigin";
 
         public Startup(IConfiguration configuration)
         {
@@ -29,22 +28,27 @@ namespace FlightControlWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            FlightPlanDBContext flightPlanDBContext = new FlightPlanDBContext();
 
-            var servers = flightPlanDBContext.Servers;
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: MyAllowSpecificOrigins,
+            //                     builder =>
+            //                     {
+            //                         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            //                     });
+            //});
 
-            var array = from server in servers
-                        select server.ServerURL.Substring(0, server.ServerURL.Length - 1);
-
-
+            var allowedOrigins = Configuration["AppSettings:AllowedOrigins"];
+            var origins = allowedOrigins.Split(";");
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                  builder =>
                                  {
-                                     builder.WithOrigins(array.ToArray());
+                                     builder.WithOrigins(origins).AllowAnyHeader().AllowAnyMethod();
                                  });
             });
+
 
             services.AddEntityFrameworkSqlServer().AddDbContext<FlightPlanDBContext>();
             services.AddControllersWithViews().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -53,11 +57,19 @@ namespace FlightControlWeb
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            //services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            var allowedOrigins = Configuration["AppSettings:AllowedOrigins"];
+            var origins = allowedOrigins.Split(";");
+            app.UseCors(options =>
+                          options.WithOrigins(origins)
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -77,14 +89,20 @@ namespace FlightControlWeb
             }
 
             app.UseRouting();
-            app.UseCors(MyAllowSpecificOrigins);
+            //app.UseCors(options =>
+            //options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
+
+            //app.UseCors(MyAllowSpecificOrigins);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
-            });
+            }).UseCors(options =>
+                          options.WithOrigins(origins)
+                            .AllowAnyMethod()
+                            .AllowAnyHeader());
 
             app.UseSpa(spa =>
             {
@@ -100,7 +118,7 @@ namespace FlightControlWeb
                 }
             });
 
-            
+
         }
     }
 }
