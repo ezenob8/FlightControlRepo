@@ -21,18 +21,25 @@ namespace FlightControlWeb.Controllers
     {
         private readonly ILogger<FlightPlanController> _logger;
         private readonly FlightPlanDBContext _context;
+        private DataBaseCalls dataBaseCalls;
 
         public FlightPlanController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
             _logger = logger;
             _context = context;
+            dataBaseCalls = new DataBaseCalls();
+        }
+
+        public void SetDataBaseCalls(DataBaseCalls dbc)
+        {
+            dataBaseCalls = dbc;
         }
 
 
         [HttpGet("{id?}")]
         public async Task<ActionResult<FlightPlanDTO>> Get(string id)
         {
-            var flightPlans = DataBaseCalls.FindFlightPlanId(_context, id);
+            var flightPlans = dataBaseCalls.FindFlightPlanId(_context, id);
             var output = from flightPlan in flightPlans
                          select new FlightPlanDTO
                          {
@@ -44,16 +51,24 @@ namespace FlightControlWeb.Controllers
                                  Latitude = flightPlan.InitialLocation.Latitude,
                                  DateTime = flightPlan.InitialLocation.DateTime.ToLocalTime().ToString("yyyy/MM/dd HH:mm:ss"),
                              },
-                             Segments = (from location in flightPlan.Segments select new LocationDTO
-                             {
-                                 Longitude = location.Longitude,
-                                 Latitude = location.Latitude,
-                                 TimeSpanSeconds = location.TimeSpanSeconds
-                             }).ToArray()
-                             };
-            var outputAsync = await output.FirstAsync<FlightPlanDTO>();
-            return outputAsync;
-
+                             Segments = (from location in flightPlan.Segments
+                                         select new LocationDTO
+                                         {
+                                             Longitude = location.Longitude,
+                                             Latitude = location.Latitude,
+                                             TimeSpanSeconds = location.TimeSpanSeconds
+                                         }).ToArray()
+                         };
+            try
+            {
+                var outputAsync = await output.FirstAsync<FlightPlanDTO>();
+                return outputAsync;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return null;
+            }
         }
 
         [HttpPost]
@@ -78,13 +93,14 @@ namespace FlightControlWeb.Controllers
                         DateTime = DateTimeOffset.Parse(flightPlanDTO.InitialLocation.DateTime).UtcDateTime
                     },
                     Segments = (from segment in flightPlanDTO.Segments
-                               select new Location { Longitude = segment.Longitude,
-                                                     Latitude = segment.Latitude,
-                                                     TimeSpanSeconds = segment.TimeSpanSeconds
-                                                   }).ToList()
+                                select new Location
+                                {
+                                    Longitude = segment.Longitude,
+                                    Latitude = segment.Latitude,
+                                    TimeSpanSeconds = segment.TimeSpanSeconds
+                                }).ToList()
                 };
-
-                string lastId = !db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).Any() ? "AAAA-0000" : db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).First().Flight.FlightIdentifier;
+                string lastId = dataBaseCalls.FindLastID(db);
                 Flight flight = new Flight
                 {
                     FlightPlan = flightPlan,
@@ -93,12 +109,12 @@ namespace FlightControlWeb.Controllers
                     IsExternal = false
                 };
 
-                await DataBaseCalls.AddAFlightPlanAndAFlight(_context, flightPlan, flight);
+                await dataBaseCalls.AddAFlightPlanAndAFlight(_context, flightPlan, flight);
             }
-
 
             return Created("", null);
         }
+
 
     }
 

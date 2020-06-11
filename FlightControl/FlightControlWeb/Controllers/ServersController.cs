@@ -18,17 +18,19 @@ namespace FlightControlWeb.Controllers
     {
         private readonly ILogger<FlightPlanController> _logger;
         private readonly FlightPlanDBContext _context;
+        private readonly DataBaseCalls dataBaseCalls;
 
         public ServersController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
             _logger = logger;
             _context = context;
+            dataBaseCalls = new DataBaseCalls();
         }
 
         [HttpGet]
         public async Task<ActionResult<ServerDTO>> Get()
         {
-            var servers = await DataBaseCalls.GetListOfServers(_context);
+            var servers = await dataBaseCalls.GetListOfServers(_context);
 
             return Ok(from server in servers
                       select new ServerDTO
@@ -46,7 +48,7 @@ namespace FlightControlWeb.Controllers
                 ServerId = serverDTO.ServerId,
                 ServerURL = serverDTO.ServerURL
             };
-            await DataBaseCalls.AddServer(_context, server);
+            await dataBaseCalls.AddServer(_context, server);
 
             return Created("", null);
         }
@@ -54,7 +56,7 @@ namespace FlightControlWeb.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            await DataBaseCalls.DeleteServer(_context, id);
+            await dataBaseCalls.DeleteServer(_context, id);
             return NoContent();
         }
 
