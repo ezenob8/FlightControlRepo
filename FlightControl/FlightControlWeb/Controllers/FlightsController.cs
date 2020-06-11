@@ -34,7 +34,7 @@ namespace FlightControlWeb.Controllers
         }
 
         [HttpGet]
-        public ActionResult Get(DateTime relative_to, bool? sync_all)
+        public OkObjectResult Get(DateTime relative_to, bool? sync_all)
         {
             var flights = dataBaseCalls.GetFlights(_context, relative_to);
 
@@ -58,40 +58,46 @@ namespace FlightControlWeb.Controllers
             var addedOutput = output.ToList();
             var flightsData = new List<FlightDTO>();
 
-            if (this.Request.QueryString.ToString().Contains("sync_all"))
+            if ((sync_all != null && sync_all == true) ||
+                ((this.Request != null) && this.Request.QueryString.ToString().Contains("sync_all")))
             {
                 var servers = dataBaseCalls.GetServers(_context);
 
                 foreach (var server in servers)
                 {
-                    using (var client = new HttpClient())
-                    {
-                        var response = client.GetAsync(server.ServerURL + "api/Flights?relative_to=" 
-                            + DateTime.Now.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'")).Result;
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var responseContent = response.Content;
-
-                            string responseString = responseContent.ReadAsStringAsync().Result;
-                            var array = JsonConvert.DeserializeObject(responseString);
-                            flightsData.AddRange(((JArray)array).Select(x => new FlightDTO
-                            {
-                                FlightIdentifier = (string)x["flight_id"],
-                                CompanyName = (string)x["company_name"],
-                                Longitude = (double)x["longitude"],
-                                Latitude = (double)x["longitude"],
-                                Passengers = (int)x["passengers"],
-                                DateTime = ((DateTime)x["date_time"]).ToLongDateString(),
-                                IsExternal = true
-                            }).ToList());
-                        }
-                    }
+                    flightsData = GetAllFlightsFromServer(flightsData, server);
                 }
             }
 
             addedOutput.AddRange(flightsData);
+            return new OkObjectResult(addedOutput);
+        }
 
-            return Ok(addedOutput);
+        public virtual List<FlightDTO> GetAllFlightsFromServer(List<FlightDTO> flightsData, Server server)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = client.GetAsync(server.ServerURL + "api/Flights?relative_to="
+                    + DateTime.Now.ToUniversalTime().ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'")).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseContent = response.Content;
+
+                    string responseString = responseContent.ReadAsStringAsync().Result;
+                    var array = JsonConvert.DeserializeObject(responseString);
+                    flightsData.AddRange(((JArray)array).Select(x => new FlightDTO
+                    {
+                        FlightIdentifier = (string)x["flight_id"],
+                        CompanyName = (string)x["company_name"],
+                        Longitude = (double)x["longitude"],
+                        Latitude = (double)x["longitude"],
+                        Passengers = (int)x["passengers"],
+                        DateTime = ((DateTime)x["date_time"]).ToLongDateString(),
+                        IsExternal = true
+                    }).ToList());
+                }
+            }
+            return flightsData;
         }
 
         [HttpDelete("{id}")]

@@ -13,5 +13,15 @@ namespace FlightControlWeb.DTO
 
         [JsonProperty("timespan_seconds")]
         public int TimeSpanSeconds { get; set; }
+        public override bool Equals(object obj)
+        {
+            if (obj is LocationDTO)
+            {
+                var that = obj as LocationDTO;
+                //Not checking if the time is the same because of formatting issue
+                return this.Latitude == that.Latitude && this.Longitude == that.Longitude;
+            };
+            return base.Equals(obj);
+        }
     }
 }

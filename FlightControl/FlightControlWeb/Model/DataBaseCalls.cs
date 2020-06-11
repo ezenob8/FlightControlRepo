@@ -59,7 +59,7 @@ namespace FlightControlWeb.Model
             return await _context.SaveChangesAsync();
         }
 
-        public string FindLastID(FlightPlanDBContext db)
+        public virtual string FindLastID(FlightPlanDBContext db)
         {
             return !db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).Any()
                 ? "AAAA-0000" : db.FlightPlans.Include(item => item.Flight).OrderByDescending(item => item.Flight.FlightIdentifier).First()

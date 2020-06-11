@@ -22,17 +22,23 @@ namespace FlightControlWeb.Controllers
         private readonly ILogger<FlightPlanController> _logger;
         private readonly FlightPlanDBContext _context;
         private DataBaseCalls dataBaseCalls;
+        private DbContextOptionsBuilder dbContextOptionsBuilder;
 
         public FlightPlanController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
             _logger = logger;
             _context = context;
             dataBaseCalls = new DataBaseCalls();
+            dbContextOptionsBuilder = null;
         }
 
         public void SetDataBaseCalls(DataBaseCalls dbc)
         {
             dataBaseCalls = dbc;
+        }
+        public void SetOptionForDBContext(DbContextOptionsBuilder dbContextOptionsBuilder)
+        {
+            this.dbContextOptionsBuilder = dbContextOptionsBuilder;
         }
 
 
@@ -64,7 +70,7 @@ namespace FlightControlWeb.Controllers
                 var outputAsync = await output.FirstAsync<FlightPlanDTO>();
                 return outputAsync;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
                 return null;
@@ -77,7 +83,13 @@ namespace FlightControlWeb.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Post(FlightPlanDTO flightPlanDTO)
         {
-            using (var db = new FlightPlanDBContext())
+            FlightPlanDBContext db = null;
+            if (dbContextOptionsBuilder == null)
+                db = new FlightPlanDBContext();
+            else
+                db = new FlightPlanDBContext(dbContextOptionsBuilder);
+
+            using (db)
             {
                 // Create FlightPlan Plan
                 FlightPlan flightPlan = new FlightPlan
