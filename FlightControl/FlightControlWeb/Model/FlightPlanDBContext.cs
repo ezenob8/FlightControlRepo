@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace FlightControlWeb.Model
 {
@@ -13,15 +11,13 @@ namespace FlightControlWeb.Model
 
         public FlightPlanDBContext(DbContextOptionsBuilder options)
         : base(options.Options)
-        {
-        }
+        { }
         public FlightPlanDBContext() : this(new DbContextOptionsBuilder()
-            .UseSqlServer("Data Source=(local);Initial Catalog=ServerExterno3FlightPlanModelDB;user=sa;password=clave123;multipleactiveresultsets=True;"))
-        {
-        }
+            // Sending to normal construcor with this defualt sql server 
+            .UseSqlServer("Data Source=(local);Initial Catalog=ServerExterno3FlightPlanModelDB;" +
+            "user=sa;password=clave123;multipleactiveresultsets=True;"))
+        { }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder options)
-        //    => options.UseSqlServer("Data Source=(local);Initial Catalog=ServerExterno3FlightPlanModelDB;user=sa;password=clave123;multipleactiveresultsets=True;");
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             MapInitLocationOfFlightPlan(modelBuilder);

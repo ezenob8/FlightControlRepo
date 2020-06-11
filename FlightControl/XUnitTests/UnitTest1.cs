@@ -2,18 +2,10 @@ using System;
 using Xunit;
 using FlightControlWeb.Controllers;
 using FlightControlWeb.Model;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using FlightControlWeb.DTO;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Moq;
-using Autofac.Extras.Moq;
-using System.Threading.Tasks;
-using System.Linq;
-using Autofac.Core;
-using Moq.Protected;
 
 namespace XUnitTests
 {
@@ -46,7 +38,7 @@ namespace XUnitTests
         }
 
         [Fact]
-        public async void Does_Server_sycnorize_With_Over_Server()
+        public async void Does_Server_sycnorize_With_Another_Server()
         {
             //Arrange
             var optionsForServerOne = new DbContextOptionsBuilder<FlightPlanDBContext>()
@@ -58,19 +50,27 @@ namespace XUnitTests
             var mockDBForServerTwo = new Mock<FlightPlanDBContext>(optionsForServerTwo) { CallBase = true };
 
             var firstFlightPlanController = new FlightPlanController(null, mockDBForServerOne.Object);
-            firstFlightPlanController.SetDataBaseCalls(new DataBaseCalls());
+
+            var dateBaseCallsOfServer1 = new Mock<DataBaseCalls>();
+            dateBaseCallsOfServer1.Setup(x => x.FindLastID(It.IsAny<FlightPlanDBContext>()))
+                .Returns(new DataBaseCalls().FindLastID(mockDBForServerOne.Object));
+            var dateBaseCallsOfServer2 = new Mock<DataBaseCalls>();
+            dateBaseCallsOfServer2.Setup(x => x.FindLastID(It.IsAny<FlightPlanDBContext>()))
+                .Returns(new DataBaseCalls().FindLastID(mockDBForServerTwo.Object));
+
+            firstFlightPlanController.SetDataBaseCalls(dateBaseCallsOfServer1.Object);
             firstFlightPlanController.SetOptionForDBContext(optionsForServerOne);
             var seconedFlightPlanController = new FlightPlanController(null, mockDBForServerTwo.Object);
-            seconedFlightPlanController.SetDataBaseCalls(new DataBaseCalls());
+            seconedFlightPlanController.SetDataBaseCalls(dateBaseCallsOfServer2.Object);
             seconedFlightPlanController.SetOptionForDBContext(optionsForServerTwo);
 
             var firstFlightController = new Mock<FlightsController>(null, mockDBForServerOne.Object);
+            firstFlightController.Object.SetDataBaseCalls(dateBaseCallsOfServer1.Object);
             var seconedFlightController = new Mock<FlightsController>(null, mockDBForServerTwo.Object);
-            
+            seconedFlightController.Object.SetDataBaseCalls(dateBaseCallsOfServer2.Object);
 
             var firstServerController = new ServersController(null, mockDBForServerOne.Object);
-            var seconedServerController = new ServersController(null, mockDBForServerTwo.Object);
-
+            var seconedServerController = new ServersController(null, mockDBForServerTwo.Object);        
 
             var testPlan1 = GetTestFlightPlanVer1();
             var testPlan2 = GetTestFlightPlanVer2();
@@ -82,12 +82,12 @@ namespace XUnitTests
             await seconedServerController.Post(server1());
 
             //Act
-            firstFlightController.Setup(x => x.GetAllFlightsFromServer(It.IsAny<List<FlightDTO>>(), It.IsAny<Server>()))
+            dateBaseCallsOfServer1.Setup(x => x.GetAllFlightsFromServer(It.IsAny<List<FlightDTO>>(), It.IsAny<Server>()))
                 .Returns((List<FlightDTO>)seconedFlightController.Object.Get(DateTime.Now, false).Value);
-            seconedFlightController.Setup(x => x.GetAllFlightsFromServer(It.IsAny<List<FlightDTO>>(), It.IsAny<Server>()))
+            dateBaseCallsOfServer2.Setup(x => x.GetAllFlightsFromServer(It.IsAny<List<FlightDTO>>(), It.IsAny<Server>()))
                 .Returns((List<FlightDTO>)firstFlightController.Object.Get(DateTime.Now, false).Value);
 
-            var responseFromFirstController =(List<FlightDTO>) firstFlightController.Object.Get(DateTime.Now, true).Value;
+            var responseFromFirstController = (List<FlightDTO>)firstFlightController.Object.Get(DateTime.Now, true).Value;
             var responseFromSeconedController = (List<FlightDTO>)seconedFlightController.Object.Get(DateTime.Now, true).Value;
 
             //Assert

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FlightControlWeb.DTO
+﻿namespace FlightControlWeb.DTO
 {
     public class ServerDTO
     {

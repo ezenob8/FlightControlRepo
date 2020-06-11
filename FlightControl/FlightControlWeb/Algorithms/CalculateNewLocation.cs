@@ -6,6 +6,7 @@ namespace FlightControlWeb.Algorithms
 {
     public class CalculateNewLocation
     {
+        // Calculate the location of a planebased on time given in actualDate
         public static Coordinates Calculate(DateTime initialDate, DateTime actualDate, Coordinates initialLocation, Location[] segments)
         {
             int secondesPastFromStart = Convert.ToInt32(actualDate.Subtract(initialDate).TotalSeconds);
@@ -48,6 +49,7 @@ namespace FlightControlWeb.Algorithms
             var difLong = Math.Abs(actualCoordSegment.Longitude - location.Longitude);
 
             var distance = ((difLat + difLong) / location.TimeSpanSeconds) * (secondesPastFromStart - sumPrevSeconds);
+            // Base value for plane move
             double deltaLat = 1, deltaLong = 1;
             GetDeltaValues(initCoord, finalCoord, difLat, difLong, distance, out deltaLat, out deltaLong);
 
