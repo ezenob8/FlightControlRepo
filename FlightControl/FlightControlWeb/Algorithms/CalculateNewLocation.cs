@@ -79,22 +79,18 @@ namespace FlightControlWeb.Algorithms
             {
                 // Down-Right
                 angle -= (Math.PI / 2);
-                deltaLat *= (-1.0);
             }
             else if (finalCoord.Longitude < initCoord.Longitude &&
-               finalCoord.Latitude > initCoord.Latitude)
+               finalCoord.Latitude >= initCoord.Latitude)
             {
                 // Up-Left
                 angle += (Math.PI / 2);
-                deltaLong *= (-1.0);
             }
             else if (finalCoord.Longitude < initCoord.Longitude &&
                finalCoord.Latitude < initCoord.Latitude)
             {
                 // Down-Left
                 angle += Math.PI;
-                deltaLat *= (-1.0);
-                deltaLong *= (-1.0);
             }
         }
     }
