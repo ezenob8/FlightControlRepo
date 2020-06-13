@@ -30,6 +30,7 @@ var FlightDetailsComponent = /** @class */ (function () {
         var _this = this;
         if (params[1] == 'clean') {
             this.selectedFlightPlan = null;
+            this.eventEmitterService.invokeAppComponentFunction.emit(params);
         }
         else {
             this.http.get(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(function (result) {
@@ -37,7 +38,6 @@ var FlightDetailsComponent = /** @class */ (function () {
                 result.segments.forEach(function (segment, index) {
                     return sum += segment.timespan_seconds;
                 });
-                console.log(result.initial_location.date_time);
                 var ini_date = new Date(result.initial_location.date_time);
                 var end_date = new Date(result.initial_location.date_time);
                 end_date.setSeconds(end_date.getSeconds() + sum);

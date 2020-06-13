@@ -188,9 +188,9 @@ export class AppComponent {
 
   public showPoligone(params: string[]) {
     if (params[1] == 'clean') {
-
+      this.selectedFlightPlan = null;
+      this.selected_flight_id = '';
     } else {
-      //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
         this.http.get<FlightPlanDTO>(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(result => {
           this.selectedFlightPlan = result;
           this.selected_flight_id = params[1];

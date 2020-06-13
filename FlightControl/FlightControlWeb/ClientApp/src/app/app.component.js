@@ -151,9 +151,10 @@ var AppComponent = /** @class */ (function () {
     AppComponent.prototype.showPoligone = function (params) {
         var _this = this;
         if (params[1] == 'clean') {
+            this.selectedFlightPlan = null;
+            this.selected_flight_id = '';
         }
         else {
-            //this.selectedFlightPlan$ = this.http.get<FlightPlanDTO>(serverURL + 'api/FlightPlan' + '/' + flightId);
             this.http.get(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(function (result) {
                 _this.selectedFlightPlan = result;
                 _this.selected_flight_id = params[1];

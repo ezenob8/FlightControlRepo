@@ -32,13 +32,13 @@ export class FlightDetailsComponent implements OnInit {
   public loadDetails(params: string[]) {
     if (params[1] == 'clean') {
       this.selectedFlightPlan = null;
+      this.eventEmitterService.invokeAppComponentFunction.emit(params);
     } else {
       this.http.get<FlightPlanDTO>(params[0] + 'api/FlightPlan' + '/' + params[1]).subscribe(result => {
         let sum: number = 0;
         result.segments.forEach((segment,index) =>
             sum += segment.timespan_seconds
         );
-        console.log(result.initial_location.date_time);
         let ini_date: Date = new Date(result.initial_location.date_time);
         let end_date: Date = new Date(result.initial_location.date_time);
         end_date.setSeconds(end_date.getSeconds() + sum);

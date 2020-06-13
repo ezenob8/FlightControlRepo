@@ -30,9 +30,10 @@ var MyFlightsComponent = /** @class */ (function () {
         this.eventEmitterService.onClickExternalClean();
     };
     MyFlightsComponent.prototype.delete = function (flightId) {
+        var _this = this;
         this.http.delete(this.baseUrl + 'api/Flights/' + flightId).subscribe(function (result) {
+            _this.eventEmitterService.onClickLoadFlightDetails([_this.baseUrl, 'clean']);
         }, function (error) { return console.error(error); });
-        this.eventEmitterService.onClickLoadFlightDetails([this.baseUrl, 'clean']);
     };
     MyFlightsComponent.prototype.clean = function () {
         this.selected_flight_id = '';
