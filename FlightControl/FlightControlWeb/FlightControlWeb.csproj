@@ -38,21 +38,16 @@
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
     <Content Remove="$(SpaRoot)**" />
     <Content Remove="ClientApp\dist\**" />
-    <Content Remove="Migrations\**" />
     <None Remove="$(SpaRoot)**" />
     <None Remove="ClientApp\dist\**" />
-    <None Remove="Migrations\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="ClientApp\dist\**" />
-    <Compile Remove="Migrations\**" />
     <EmbeddedResource Remove="ClientApp\dist\**" />
-    <EmbeddedResource Remove="Migrations\**" />
     <TypeScriptCompile Remove="ClientApp\dist\**" />
     <TypeScriptCompile Remove="ClientApp\node_modules\**" />
-    <TypeScriptCompile Remove="Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,13 +69,6 @@
   <ItemGroup>
     <TypeScriptCompile Remove="ClientApp\e2e\src\app.e2e-spec.ts" />
     <TypeScriptCompile Remove="ClientApp\e2e\src\app.po.ts" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Compile Include="Migrations\20200610153310_InitialCreate.cs" />
-    <Compile Include="Migrations\20200610153310_InitialCreate.Designer.cs" />
-    <Compile Include="Migrations\FlightPlanDBContextModelSnapshot.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -124,6 +112,10 @@
     </ItemGroup>
   </Target>
 
-  <ProjectExtensions><VisualStudio><UserProperties clientapp_4package_1json__JsonSchema="" clientapp_4tsconfig_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties clientapp_4package_1json__JsonSchema="" clientapp_4tsconfig_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 
 </Project>
