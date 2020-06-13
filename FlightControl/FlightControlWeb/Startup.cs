@@ -39,39 +39,19 @@ namespace FlightControlWeb
                                  });
             });
 
-
-            //FlightPlanDBContext flightPlanDBContext = new FlightPlanDBContext();
-
-            //var arrayOrigins = (from server in flightPlanDBContext.Servers.ToList()
-            //                   select server.ServerURL.Substring(0, server.ServerURL.Length - 1)).ToArray();
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //                     builder =>
-            //                     {
-            //                         builder.WithOrigins(arrayOrigins).AllowAnyHeader().AllowAnyMethod();
-            //                     });
-            //});
-
-
             services.AddEntityFrameworkSqlServer().AddDbContext<FlightPlanDBContext>();
-            services.AddControllersWithViews().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllersWithViews().AddNewtonsoftJson(x =>
+                x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
-           // services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-            //FlightPlanDBContext flightPlanDBContext = new FlightPlanDBContext();
-
-            //var arrayOrigins = (from server in flightPlanDBContext.Servers.ToList()
-            //                    select server.ServerURL.Substring(0, server.ServerURL.Length - 1)).ToArray();
             app.UseCors(options =>
                           options.AllowAnyOrigin()
                             .AllowAnyMethod()
@@ -83,7 +63,8 @@ namespace FlightControlWeb
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // The default HSTS value is 30 days. You may want to change this for production scenarios,
+                // see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -95,11 +76,6 @@ namespace FlightControlWeb
             }
 
             app.UseRouting();
-            //app.UseCors(options =>
-            //options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-
-
-            //app.UseCors(MyAllowSpecificOrigins);
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -111,9 +87,7 @@ namespace FlightControlWeb
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
-
                 if (env.IsDevelopment())
                 {
                     spa.UseAngularCliServer(npmScript: "start");

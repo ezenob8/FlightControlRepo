@@ -18,18 +18,27 @@ namespace FlightControlWeb.Controllers
     {
         private readonly ILogger<FlightPlanController> _logger;
         private readonly FlightPlanDBContext _context;
+        private readonly DataBaseCalls dataBaseCalls;
 
         public ServersController(ILogger<FlightPlanController> logger, FlightPlanDBContext context)
         {
             _logger = logger;
             _context = context;
+            dataBaseCalls = new DataBaseCalls();
         }
 
         [HttpGet]
         public async Task<ActionResult<ServerDTO>> Get()
         {
-            var servers = await DataBaseCalls.GetListOfServers(_context);
+            List<Server> servers;
+            try { servers = await dataBaseCalls.GetListOfServers(_context); }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return null;
+            }
 
+            // Create a server DTO to return
             return Ok(from server in servers
                       select new ServerDTO
                       {
@@ -41,20 +50,29 @@ namespace FlightControlWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ServerDTO serverDTO)
         {
+            // Making a normal server drom DTO form
             Server server = new Server
             {
                 ServerId = serverDTO.ServerId,
                 ServerURL = serverDTO.ServerURL
             };
-            await DataBaseCalls.AddServer(_context, server);
-
-            return Created("", null);
+            try
+            {
+                await dataBaseCalls.AddServer(_context, server);
+                return Created("", null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return null;
+            }
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            await DataBaseCalls.DeleteServer(_context, id);
+            try { await dataBaseCalls.DeleteServer(_context, id); }
+            catch (Exception ex) { _logger.LogError(ex.Message, ex); }
             return NoContent();
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FlightControlWeb.Model
+﻿namespace FlightControlWeb.Model
 {
     public class Coordinates
     {
