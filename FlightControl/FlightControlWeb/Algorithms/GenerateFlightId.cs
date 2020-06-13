@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FlightControlWeb.Algorithms
 {
     public class GenerateFlightId
     {
+        /*
+         * Creates a flight identifier based on the last ID create
+         */
         public static string GenerateFlightIdentifier(string currentId)
         {
-            if(currentId.CompareTo("") == 0)
+            if (currentId.CompareTo("") == 0)
             {
                 // Base case
                 return "AAAA-0000";

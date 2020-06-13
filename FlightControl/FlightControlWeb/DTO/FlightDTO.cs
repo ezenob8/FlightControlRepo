@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace FlightControlWeb.DTO
 {
@@ -23,5 +20,17 @@ namespace FlightControlWeb.DTO
         public bool IsExternal { get; set; }
 
         public string ServerId { get; set; }
+        public override bool Equals(object obj)
+        {
+            if (obj is FlightDTO)
+            {
+                var that = obj as FlightDTO;
+                return this.CompanyName == that.CompanyName && this.DateTime == that.DateTime &&
+                    this.FlightIdentifier == that.FlightIdentifier && this.IsExternal == that.IsExternal &&
+                    this.Latitude == that.Latitude && this.Longitude == that.Longitude &&
+                    this.Passengers == that.Passengers;
+            }
+            else return base.Equals(obj);
+        }
     }
 }
