@@ -21,8 +21,6 @@ namespace XUnitTests
             var mockDB = new Mock<FlightPlanDBContext>(options) { CallBase = true };
 
             var flightPlanController = new FlightPlanController(null, mockDB.Object);
-            //flightPlanController.SetDataBaseCalls(new DataBaseCalls());
-            //flightPlanController.SetOptionForDBContext(options);
             var testPlan = GetTestFlightPlanVer1();
 
             //Act

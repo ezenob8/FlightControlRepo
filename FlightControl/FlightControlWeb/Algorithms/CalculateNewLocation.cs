@@ -12,26 +12,22 @@ namespace FlightControlWeb.Algorithms
             int secondesPastFromStart = Convert.ToInt32(actualDate.Subtract(initialDate).TotalSeconds);
             int sumSeconds = 0, sumPrevSeconds = 0;
             Coordinates actualCoordSegment = initialLocation, actualCoordinates = null;
-            for (int i = 0; i < segments.Length; i++)
-            {
+            for (int i = 0; i < segments.Length; i++) {
                 var location = segments[i];
                 sumPrevSeconds = sumSeconds;
                 sumSeconds += location.TimeSpanSeconds;
-                if (secondesPastFromStart == sumSeconds)
-                {
+                if (secondesPastFromStart == sumSeconds) {
                     // The plane is on the location now
                     actualCoordinates = location;
                     break;
                 }
-                else if (secondesPastFromStart < sumSeconds)
-                {
+                else if (secondesPastFromStart < sumSeconds) {
                     double newLat, newLong;
                     FindCoordinates(secondesPastFromStart, sumPrevSeconds, actualCoordSegment, location, out newLat, out newLong);
                     actualCoordinates = new Coordinates { Longitude = newLong, Latitude = newLat };
                     break;
                 }
-                else
-                {
+                else {
                     // We need to calculate from the next segment
                     actualCoordSegment = location;
                 }
@@ -44,15 +40,12 @@ namespace FlightControlWeb.Algorithms
         {
             var initCoord = new GeoCoordinate(actualCoordSegment.Latitude, actualCoordSegment.Longitude);
             var finalCoord = new GeoCoordinate(location.Latitude, location.Longitude);
-
             var difLat = Math.Abs(actualCoordSegment.Latitude - location.Latitude);
             var difLong = Math.Abs(actualCoordSegment.Longitude - location.Longitude);
-
             var distance = ((difLat + difLong) / location.TimeSpanSeconds) * (secondesPastFromStart - sumPrevSeconds);
             // Base value for plane move
             double deltaLat = 1, deltaLong = 1;
             GetDeltaValues(initCoord, finalCoord, difLat, difLong, distance, out deltaLat, out deltaLong);
-
             newLat = actualCoordSegment.Latitude + deltaLat;
             newLong = actualCoordSegment.Longitude + deltaLong;
         }
@@ -62,11 +55,9 @@ namespace FlightControlWeb.Algorithms
         {
             // The base angle (Up-Right)
             var angle = Math.Atan(difLat / difLong);
-
             // The base move distance
             deltaLat = 1.0; deltaLong = 1.0;
             CorrectAngle(initCoord, finalCoord, ref deltaLat, ref deltaLong, ref angle);
-
             deltaLat *= (Math.Sin(angle) * distance);
             deltaLong *= (Math.Cos(angle) * distance);
         }
@@ -75,20 +66,17 @@ namespace FlightControlWeb.Algorithms
             ref double deltaLong, ref double angle)
         {
             if (finalCoord.Longitude > initCoord.Longitude &&
-                            finalCoord.Latitude < initCoord.Latitude)
-            {
+                            finalCoord.Latitude < initCoord.Latitude) {
                 // Down-Right
                 angle -= (Math.PI / 2);
             }
             else if (finalCoord.Longitude < initCoord.Longitude &&
-               finalCoord.Latitude >= initCoord.Latitude)
-            {
+               finalCoord.Latitude >= initCoord.Latitude) {
                 // Up-Left
                 angle += (Math.PI / 2);
             }
             else if (finalCoord.Longitude < initCoord.Longitude &&
-               finalCoord.Latitude < initCoord.Latitude)
-            {
+               finalCoord.Latitude < initCoord.Latitude) {
                 // Down-Left
                 angle += Math.PI;
             }

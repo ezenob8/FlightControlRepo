@@ -5,7 +5,7 @@
           <div class="p-2" (click)="clean()">
 
             
-            <agm-map (mapReady)="mapReady($event)">
+            <agm-map (mapReady)="mapReady($event)" >
               <agm-marker *ngFor="let flight of extendedFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''"  [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="icon" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id);">
               </agm-marker>
               <agm-marker *ngFor="let flight of internalFlights" [animation]="flight.flight_id == selected_flight_id ? 'BOUNCE' : ''" [latitude]="flight.latitude" [longitude]="flight.longitude" [iconUrl]="iconBlack" [markerClickable]="true" (markerClick)="flightPlanLoadDetailClick(flight.serverURL,flight.flight_id);">

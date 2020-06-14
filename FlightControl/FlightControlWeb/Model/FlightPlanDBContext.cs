@@ -26,6 +26,10 @@ namespace FlightControlWeb.Model
             MapServers(modelBuilder);
         }
 
+        /// <summary>
+        /// Configuration Mapping Server Entity, Entity Framework
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         private static void MapServers(ModelBuilder modelBuilder)
         {
             #region Mapping Servers
@@ -36,7 +40,10 @@ namespace FlightControlWeb.Model
             });
             #endregion
         }
-
+        /// <summary>
+        /// Configuration Mapping Flight Entity, Entity Framework
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         private static void MapFlights(ModelBuilder modelBuilder)
         {
             #region Mapping Flight
@@ -47,6 +54,10 @@ namespace FlightControlWeb.Model
             #endregion
         }
 
+        /// <summary>
+        /// Configuration Mapping Segments Entity, Entity Framework
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         private static void MapSegmentOfFlightPlan(ModelBuilder modelBuilder)
         {
             #region Mapping Segments of FlightPlan
@@ -57,6 +68,10 @@ namespace FlightControlWeb.Model
             #endregion
         }
 
+        /// <summary>
+        /// Configuration Mapping InitLocation Entity, Entity Framework
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         private static void MapInitLocationOfFlightPlan(ModelBuilder modelBuilder)
         {
             #region Mapping InitialLocation of FlightPlan
