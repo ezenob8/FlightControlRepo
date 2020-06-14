@@ -19,5 +19,10 @@ namespace FlightControlWeb.DTO
             };
             return base.Equals(obj);
         }
+
+        public override int GetHashCode()
+        {
+            return this.Longitude.GetHashCode();
+        }
     }
 }

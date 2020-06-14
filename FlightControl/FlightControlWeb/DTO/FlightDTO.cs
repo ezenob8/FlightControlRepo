@@ -32,5 +32,9 @@ namespace FlightControlWeb.DTO
             }
             else return base.Equals(obj);
         }
+        public override int GetHashCode()
+        {
+            return this.FlightIdentifier.GetHashCode();
+        }
     }
 }

@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using FlightControlWeb.Model;
 using System.Linq;
 
+
 namespace FlightControlWeb
 {
     public class Startup
@@ -27,7 +28,8 @@ namespace FlightControlWeb
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
-
+            var dbContext = new FlightPlanDBContext();
+            dbContext.Database.Migrate();
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
