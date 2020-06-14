@@ -57,27 +57,33 @@ export class AppComponent {
 
         //External Flights
         http.get<ServerDTO[]>(baseUrl + 'api/servers').subscribe(resultServer => {
+          self.extendedFlights = [];
           self.servers = resultServer;
           self.servers.forEach(server => {
             http.get<FlightDTO[]>(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];
-              self.extendedFlights = [];
               self.externalFlights = resultExternal;
-              self.externalFlights.forEach(item => {
-                const extendedFlight: ExtendedFlightDTO = {
-                  flight_id: item.flight_id,
-                  longitude: item.longitude,
-                  latitude: item.latitude,
-                  passengers: item.passengers,
-                  company_name: item.company_name,
-                  date_time: item.date_time,
-                  is_external: item.is_external,
-                  serverId: server.serverId,
-                  serverURL: server.serverURL
-                };
-                ext.push(extendedFlight);
-                self.extendedFlights = ext;
-              });
+              if (resultExternal.length > 0) {
+                self.externalFlights.forEach(item => {
+                  const extendedFlight: ExtendedFlightDTO = {
+                    flight_id: item.flight_id,
+                    longitude: item.longitude,
+                    latitude: item.latitude,
+                    passengers: item.passengers,
+                    company_name: item.company_name,
+                    date_time: item.date_time,
+                    is_external: item.is_external,
+                    serverId: server.serverId,
+                    serverURL: server.serverURL
+                  };
+                  ext.push(extendedFlight);
+                  ext.forEach(extItem =>
+                    self.extendedFlights.push(extItem)
+                  );
+                });
+              }
+
+
             }, error => console.error(error));
           }
           )

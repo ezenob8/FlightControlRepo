@@ -63,27 +63,31 @@ var AppComponent = /** @class */ (function () {
             });
             //External Flights
             http.get(baseUrl + 'api/servers').subscribe(function (resultServer) {
+                self.extendedFlights = [];
                 self.servers = resultServer;
                 self.servers.forEach(function (server) {
                     http.get(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
                         var ext = [];
-                        self.extendedFlights = [];
                         self.externalFlights = resultExternal;
-                        self.externalFlights.forEach(function (item) {
-                            var extendedFlight = {
-                                flight_id: item.flight_id,
-                                longitude: item.longitude,
-                                latitude: item.latitude,
-                                passengers: item.passengers,
-                                company_name: item.company_name,
-                                date_time: item.date_time,
-                                is_external: item.is_external,
-                                serverId: server.serverId,
-                                serverURL: server.serverURL
-                            };
-                            ext.push(extendedFlight);
-                            self.extendedFlights = ext;
-                        });
+                        if (resultExternal.length > 0) {
+                            self.externalFlights.forEach(function (item) {
+                                var extendedFlight = {
+                                    flight_id: item.flight_id,
+                                    longitude: item.longitude,
+                                    latitude: item.latitude,
+                                    passengers: item.passengers,
+                                    company_name: item.company_name,
+                                    date_time: item.date_time,
+                                    is_external: item.is_external,
+                                    serverId: server.serverId,
+                                    serverURL: server.serverURL
+                                };
+                                ext.push(extendedFlight);
+                                ext.forEach(function (extItem) {
+                                    return self.extendedFlights.push(extItem);
+                                });
+                            });
+                        }
                     }, function (error) { return console.error(error); });
                 });
             }, function (error) { return console.error(error); });
