@@ -61,7 +61,7 @@ export class AppComponent {
           self.servers.forEach(server => {
             http.get<FlightDTO[]>(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];
-              self.extendedFlights = null;
+              self.extendedFlights = [];
               self.externalFlights = resultExternal;
               self.externalFlights.forEach(item => {
                 const extendedFlight: ExtendedFlightDTO = {

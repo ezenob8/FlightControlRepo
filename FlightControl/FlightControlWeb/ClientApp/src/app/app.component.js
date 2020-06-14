@@ -67,7 +67,7 @@ var AppComponent = /** @class */ (function () {
                 self.servers.forEach(function (server) {
                     http.get(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
                         var ext = [];
-                        self.extendedFlights = null;
+                        self.extendedFlights = [];
                         self.externalFlights = resultExternal;
                         self.externalFlights.forEach(function (item) {
                             var extendedFlight = {
