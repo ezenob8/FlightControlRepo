@@ -49,7 +49,7 @@ namespace FlightControlWeb.Controllers
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        private LocationDTO FactoryLocationDTO(Location location)
+        private static LocationDTO FactoryLocationDTO(Location location)
         {
             return new LocationDTO
             {
@@ -64,7 +64,7 @@ namespace FlightControlWeb.Controllers
         /// </summary>
         /// <param name="flightPlan"></param>
         /// <returns></returns>
-        private InitialLocationDTO FactoryInitialLocationDTO(FlightPlan flightPlan)
+        private static InitialLocationDTO FactoryInitialLocationDTO(FlightPlan flightPlan)
         {
             return new InitialLocationDTO
             {
@@ -103,7 +103,7 @@ namespace FlightControlWeb.Controllers
         /// </summary>
         /// <param name="flightPlanDTO"></param>
         /// <returns></returns>
-        private Flight FactoryFlight(FlightPlan flightPlan, string lastId)
+        private static Flight FactoryFlight(FlightPlan flightPlan, string lastId)
         {
             return new Flight
             {
@@ -119,7 +119,7 @@ namespace FlightControlWeb.Controllers
         /// </summary>
         /// <param name="flightPlanDTO"></param>
         /// <returns></returns>
-        private IEnumerable<Location> FactoryLocation(FlightPlanDTO flightPlanDTO)
+        private static IEnumerable<Location> FactoryLocation(FlightPlanDTO flightPlanDTO)
         {
             return from segment in flightPlanDTO.Segments
                    select new Location
@@ -135,7 +135,7 @@ namespace FlightControlWeb.Controllers
         /// </summary>
         /// <param name="flightPlanDTO"></param>
         /// <returns></returns>
-        private InitialLocation FactoryInitialLocation(FlightPlanDTO flightPlanDTO)
+        private static InitialLocation FactoryInitialLocation(FlightPlanDTO flightPlanDTO)
         {
             return new InitialLocation
             {

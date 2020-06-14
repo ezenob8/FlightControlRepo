@@ -65,7 +65,7 @@ namespace FlightControlWeb.Controllers
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        private FlightDTO FactoryJSONFlightDTO(JToken x)
+        private static FlightDTO FactoryJSONFlightDTO(JToken x)
         {
             return new FlightDTO
             {
@@ -85,7 +85,7 @@ namespace FlightControlWeb.Controllers
         /// <param name="relative_to"></param>
         /// <param name="flight"></param>
         /// <returns></returns>
-        private FlightDTO FactoryFlightDTO(DateTime relative_to, Flight flight)
+        private static FlightDTO FactoryFlightDTO(DateTime relative_to, Flight flight)
         {
             return new FlightDTO
             {
