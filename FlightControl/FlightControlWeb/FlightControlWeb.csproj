@@ -56,6 +56,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\DataBaseCalls.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="web.config" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="ClientApp\dist\3rdpartylicenses.txt" />
     <None Remove="ClientApp\dist\assets\images\plane-black.png" />
     <None Remove="ClientApp\dist\assets\images\plane-rojo.png" />
@@ -88,12 +96,6 @@
     <TypeScriptCompile Include="ClientApp\src\app\flight-details\flight-details.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\my-flights\my-flights.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\toggle-button.component.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="web.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
