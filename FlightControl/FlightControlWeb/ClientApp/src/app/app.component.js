@@ -63,14 +63,14 @@ var AppComponent = /** @class */ (function () {
             });
             //External Flights
             http.get(baseUrl + 'api/servers').subscribe(function (resultServer) {
+                self.extendedFlights = null;
                 self.extendedFlights = [];
                 self.servers = resultServer;
                 self.servers.forEach(function (server) {
                     http.get(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) + 'Z').subscribe(function (resultExternal) {
                         var ext = [];
-                        self.externalFlights = resultExternal;
                         if (resultExternal.length > 0) {
-                            self.externalFlights.forEach(function (item) {
+                            resultExternal.forEach(function (item) {
                                 var extendedFlight = {
                                     flight_id: item.flight_id,
                                     longitude: item.longitude,
@@ -163,7 +163,7 @@ var AppComponent = /** @class */ (function () {
                 _this.selectedFlightPlan = result;
                 _this.selected_flight_id = params[1];
             }, function (error) { return console.error(error); });
-            this.selected_flight_id = params[1];
+            // this.selected_flight_id = params[1];
         }
     };
     AppComponent.prototype.clean = function () {

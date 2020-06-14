@@ -14,7 +14,7 @@ namespace FlightControlWeb.Model
         { }
         public FlightPlanDBContext() : this(new DbContextOptionsBuilder()
             // Sending to normal construcor with this defualt sql server 
-            .UseSqlServer("Data Source=(local);Initial Catalog=ServerExternoFlightPlanModelDB;" +
+            .UseSqlServer("Data Source=(local);Initial Catalog=FlightPlanModelDB;" +
             "user=sa;password=clave123;multipleactiveresultsets=True;"))
         { }
 

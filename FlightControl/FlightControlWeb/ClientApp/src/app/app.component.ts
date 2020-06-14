@@ -57,14 +57,14 @@ export class AppComponent {
 
         //External Flights
         http.get<ServerDTO[]>(baseUrl + 'api/servers').subscribe(resultServer => {
+          self.extendedFlights = null;
           self.extendedFlights = [];
           self.servers = resultServer;
           self.servers.forEach(server => {
             http.get<FlightDTO[]>(server.serverURL + 'api/Flights?relative_to=' + new Date().toISOString().substring(0, 19) +'Z').subscribe(resultExternal => {
               let ext: ExtendedFlightDTO[] = [];
-              self.externalFlights = resultExternal;
               if (resultExternal.length > 0) {
-                self.externalFlights.forEach(item => {
+                resultExternal.forEach(item => {
                   const extendedFlight: ExtendedFlightDTO = {
                     flight_id: item.flight_id,
                     longitude: item.longitude,
@@ -202,7 +202,7 @@ export class AppComponent {
           this.selectedFlightPlan = result;
           this.selected_flight_id = params[1];
         }, error => console.error(error));
-        this.selected_flight_id = params[1];
+       // this.selected_flight_id = params[1];
     }
 
   }
